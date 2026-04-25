@@ -16,8 +16,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       password,
     );
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('用户名或密码错误');
+    } else {
+      return user;
     }
-    return user;
   }
 }
