@@ -1,19 +1,10 @@
 <script setup lang="ts"></script>
-
 <template>
   <div class="container">
-    <RouterView />
+    <h1>欢迎进入电影票务系统</h1>
+    <el-button>点击进入</el-button>
   </div>
 </template>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-</style>
-
 <style scoped>
 .container {
   display: flex;
@@ -21,5 +12,11 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+
 }
 </style>
