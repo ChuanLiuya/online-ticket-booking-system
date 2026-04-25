@@ -1,8 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+</script>
 <template>
   <div class="container">
     <h1>欢迎进入电影票务系统</h1>
-    <el-button>点击进入</el-button>
+    <el-button type="primary" @click="router.push('/layout')">点击进入</el-button>
   </div>
 </template>
 <style scoped>
@@ -11,7 +15,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
 }
 
 h1 {
