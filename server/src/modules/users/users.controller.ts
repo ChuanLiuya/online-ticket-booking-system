@@ -1,8 +1,8 @@
-import { Controller, Post, Body, UseGuards, Get, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Users } from './entities/users.entity';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -15,7 +15,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getCurrentUser(@Req() req: { user: Users }): Users {
+  getCurrentUser(@Req() req: { user: User }): User {
     const user = req.user;
     return user;
   }

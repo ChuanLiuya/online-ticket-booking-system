@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Users } from 'src/modules/users/entities/users.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -12,7 +12,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest<TUser = Users>(
+  handleRequest<TUser = User>(
     err: any,
     user: TUser | null,
     info: { name: string } | undefined,
