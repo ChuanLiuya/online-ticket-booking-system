@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { House } from '@lucide/vue';
+import { Film } from '@lucide/vue';
+</script>
 
 <template>
   <el-container class="layout">
@@ -24,11 +27,11 @@
       <el-aside width="200px" class="aside">
         <el-menu default-active="2" class="aside-menu">
           <el-menu-item index="1">
-            <el-icon></el-icon>
+            <el-icon><House /></el-icon>
             <span>首页</span>
           </el-menu-item>
           <el-menu-item index="2">
-            <el-icon><setting /></el-icon>
+            <el-icon><Film /></el-icon>
             <span>电影</span>
           </el-menu-item>
         </el-menu>
