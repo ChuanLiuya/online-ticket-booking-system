@@ -1,13 +1,14 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Test } from './entities/test.entity';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TestService {
   constructor(
-    @Inject('TEST_REPOSITORY')
+    @InjectRepository(Test)
     private testRepository: Repository<Test>,
   ) {}
   async create(test: CreateTestDto): Promise<Test> {

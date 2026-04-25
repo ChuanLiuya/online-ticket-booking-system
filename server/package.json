@@ -25,6 +25,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/typeorm": "^11.0.1",
     "mysql2": "^3.22.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
