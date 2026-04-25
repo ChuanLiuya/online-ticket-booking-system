@@ -14,4 +14,8 @@ export class UsersService {
   register(form: RegisterDto) {
     return this.usersRepository.save(form);
   }
+
+  findOneByUsername(username: string) {
+    return this.usersRepository.findOne({ where: { username } });
+  }
 }
