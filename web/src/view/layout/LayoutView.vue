@@ -25,12 +25,12 @@ import { Film } from '@lucide/vue';
 
 
       <el-aside width="200px" class="aside">
-        <el-menu default-active="2" class="aside-menu">
-          <el-menu-item index="1">
+        <el-menu default-active="2" class="aside-menu" router>
+          <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="/movies">
             <el-icon><Film /></el-icon>
             <span>电影</span>
           </el-menu-item>
