@@ -7,6 +7,23 @@ const router = createRouter({
       path: '/',
       component: IndexView,
     },
+    {
+      path: '/layout',
+      component:import('../view/layout/LayoutView.vue'),
+      redirect: '/home',
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          component: () => import('../view/layout/HomeView.vue'),
+        },
+        {
+          path: '/movies',
+          name: 'movies',
+          component: () => import('../view/layout/MoviesView.vue'),
+        }
+      ],
+    }
   ],
 })
 
