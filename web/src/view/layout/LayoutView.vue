@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { House } from '@lucide/vue';
 import { Film } from '@lucide/vue';
+import { X } from '@lucide/vue';
+import { Search } from '@lucide/vue';
+import { ref } from 'vue';
+
+const searchText = ref('');
 </script>
 
 <template>
@@ -11,7 +16,9 @@ import { Film } from '@lucide/vue';
 
     <el-header class="header">
       <div class="logo">在线电影票务</div>
-      <div class="search">搜索</div>
+      <div class="search">
+        <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
+      </div>
       <div class="login">登录</div>
     </el-header>
 
@@ -86,7 +93,6 @@ import { Film } from '@lucide/vue';
   }
   .search {
     flex: 1;
-    background-color: aqua;
   }
   .login {
     display: flex;
