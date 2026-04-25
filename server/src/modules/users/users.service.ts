@@ -3,6 +3,7 @@ import { RegisterDto } from './dto/register.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hashPassword } from 'src/common/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  register(form: RegisterDto) {
+  async register(form: RegisterDto) {
+    form.password = await hashPassword(form.password);
     return this.usersRepository.save(form);
   }
 

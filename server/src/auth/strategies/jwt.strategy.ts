@@ -16,9 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
+    // 进入此处代表jwt有效
     const user = await this.usersService.findOneByUsername(payload.username);
+    // jwt有效，但是未找到用户
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('用户不存在');
     }
     return user;
   }

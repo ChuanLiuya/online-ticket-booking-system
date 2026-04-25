@@ -18,12 +18,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     info: { name: string } | undefined,
   ) {
     if (err || !user) {
+      // token过期
       if (info && info.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token 已过期，请重新登录');
+        // token格式错误/签名错误
       } else if (info && info.name === 'JsonWebTokenError') {
         throw new UnauthorizedException('无效的 Token，请检查');
+        // validate() 抛出异常
       } else if (err) {
         throw err;
+        // 没有err，但也没有user
       } else {
         throw new UnauthorizedException('认证失败，请重新登录');
       }
