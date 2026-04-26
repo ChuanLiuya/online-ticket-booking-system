@@ -3,13 +3,19 @@ import { House } from '@lucide/vue';
 import { Film } from '@lucide/vue';
 import { X } from '@lucide/vue';
 import { Search } from '@lucide/vue';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
+import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue';
+import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue';
 
 const searchText = ref('');
 
-const handleLogin = () => {
-  console.log('登录');
+
+const dialogState : Ref<'login' | 'register' | 'disabled'> = ref('disabled');
+const clickLoginButton = () => {
+  dialogState.value = 'login';
 };
+
+
 </script>
 
 <template>
@@ -24,7 +30,7 @@ const handleLogin = () => {
         <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
       </div>
       <div class="login">
-        <el-button @click="handleLogin">登录</el-button>
+        <el-button @click="clickLoginButton">登录</el-button>
       </div>
     </el-header>
 
@@ -68,6 +74,9 @@ const handleLogin = () => {
 
     </el-container>
   </el-container>
+
+  <MyRegisterDialog v-model="dialogState" />
+  <MyLoginDialog v-model="dialogState" />
 </template>
 
 <style scoped>
