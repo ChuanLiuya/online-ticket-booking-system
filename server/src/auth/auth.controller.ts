@@ -11,8 +11,11 @@ export class AuthController {
   @Post('login')
   login(
     @Request() req: { user: User },
-  ): ApiResponseDto<{ access_token: string }> {
+  ): ApiResponseDto<{ access_token: string; user: User }> {
     const data = this.authService.login(req.user);
-    return new ApiResponseDto('登录成功', data);
+    return new ApiResponseDto('登录成功', {
+      access_token: data.access_token,
+      user: req.user,
+    });
   }
 }
