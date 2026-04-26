@@ -1,36 +1,40 @@
 <script setup lang="ts">
-import { House } from '@lucide/vue';
-import { Film } from '@lucide/vue';
-import { X } from '@lucide/vue';
-import { Search } from '@lucide/vue';
-import { ref } from 'vue';
+import { House } from '@lucide/vue'
+import { Film } from '@lucide/vue'
+import { X } from '@lucide/vue'
+import { Search } from '@lucide/vue'
+import { ref, type Ref } from 'vue'
+import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
+import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
+import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
 
-const searchText = ref('');
+const searchText = ref('')
+
+const dialogState: Ref<'login' | 'register' | 'disabled'> = ref('disabled')
+const clickLoginButton = () => {
+  dialogState.value = 'login'
+}
 </script>
 
 <template>
   <el-container class="layout">
-
-
-
-
     <el-header class="header">
       <div class="logo">在线电影票务</div>
       <div class="search">
-        <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
+        <el-input
+          placeholder="搜索电影"
+          v-model="searchText"
+          clearable
+          :clear-icon="X"
+          :prefix-icon="Search"
+        ></el-input>
       </div>
-      <div class="login">登录</div>
+      <div class="login">
+        <MyMainAvatar @login-click="clickLoginButton" />
+      </div>
     </el-header>
 
-
-
-
     <el-container class="body">
-
-
-
-
-
       <el-aside width="200px" class="aside">
         <el-menu default-active="2" class="aside-menu" router>
           <el-menu-item index="/home">
@@ -44,24 +48,16 @@ const searchText = ref('');
         </el-menu>
       </el-aside>
 
-
-
-
-
-
       <el-main class="main">
         <div class="main-inner">
           <RouterView />
         </div>
       </el-main>
-
-
-
-
-
-
     </el-container>
   </el-container>
+
+  <MyRegisterDialog v-model="dialogState" />
+  <MyLoginDialog v-model="dialogState" />
 </template>
 
 <style scoped>
@@ -101,6 +97,13 @@ const searchText = ref('');
     width: 200px;
     flex-shrink: 0;
     flex-grow: 0;
+    .avatar {
+      cursor: pointer;
+      background: black;
+      &:hover {
+        background: #409eff;
+      }
+    }
   }
 }
 
