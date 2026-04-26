@@ -10,8 +10,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  register(@Body() registerDto: RegisterDto) {
-    const data = this.usersService.register(registerDto);
+  async register(@Body() registerDto: RegisterDto) {
+    const data = await this.usersService.register(registerDto);
     return new ApiResponseDto('注册成功', data);
   }
 
