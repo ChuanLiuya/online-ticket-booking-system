@@ -1,52 +1,40 @@
 <script setup lang="ts">
-import { House } from '@lucide/vue';
-import { Film } from '@lucide/vue';
-import { X } from '@lucide/vue';
-import { Search } from '@lucide/vue';
-import { ref, type Ref } from 'vue';
-import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue';
-import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue';
-import { useUserStore } from '@/stores/user';
+import { House } from '@lucide/vue'
+import { Film } from '@lucide/vue'
+import { X } from '@lucide/vue'
+import { Search } from '@lucide/vue'
+import { ref, type Ref } from 'vue'
+import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
+import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
+import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
 
-const userStore = useUserStore();
+const searchText = ref('')
 
-const searchText = ref('');
-
-
-const dialogState : Ref<'login' | 'register' | 'disabled'> = ref('disabled');
+const dialogState: Ref<'login' | 'register' | 'disabled'> = ref('disabled')
 const clickLoginButton = () => {
-  dialogState.value = 'login';
-};
-
-
+  dialogState.value = 'login'
+}
 </script>
 
 <template>
   <el-container class="layout">
-
-
-
-
     <el-header class="header">
       <div class="logo">在线电影票务</div>
       <div class="search">
-        <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
+        <el-input
+          placeholder="搜索电影"
+          v-model="searchText"
+          clearable
+          :clear-icon="X"
+          :prefix-icon="Search"
+        ></el-input>
       </div>
       <div class="login">
-        <el-avatar v-if="userStore.isLoggedIn" class="avatar">{{ userStore?.user?.nickname?.[0] || userStore?.user?.username?.[0] || '用户' }}</el-avatar>
-        <el-avatar v-else class="avatar" @click="clickLoginButton">登录</el-avatar>
+        <MyMainAvatar @login-click="clickLoginButton" />
       </div>
     </el-header>
 
-
-
-
     <el-container class="body">
-
-
-
-
-
       <el-aside width="200px" class="aside">
         <el-menu default-active="2" class="aside-menu" router>
           <el-menu-item index="/home">
@@ -60,22 +48,11 @@ const clickLoginButton = () => {
         </el-menu>
       </el-aside>
 
-
-
-
-
-
       <el-main class="main">
         <div class="main-inner">
           <RouterView />
         </div>
       </el-main>
-
-
-
-
-
-
     </el-container>
   </el-container>
 
