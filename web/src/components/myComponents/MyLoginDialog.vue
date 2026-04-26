@@ -30,22 +30,28 @@ const clickLoginButton = async () => {
   <el-dialog
     v-model="dialogVisible"
     title="用户登录"
-    width="500"
+    width="420"
     align-center
     @close="() => { if (dialogState === 'login') dialogState = 'disabled' }"
     :close-on-click-modal="false"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" status-icon>
+    <div class="welcome-text">
+      <h2>欢迎回来!</h2>
+      <p>请登录您的账号继续购票</p>
+    </div>
+    <div class="form-container">
+      <el-form ref="formRef" :model="form" :rules="rules" status-icon class="form">
       <el-form-item prop="username">
-        <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User"/>
+        <el-input class="input" v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password />
+        <el-input class="input" v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password />
       </el-form-item>
       <div class="form-toggle">
         还没有账号？ <span @click="dialogState = 'register'" class="toggle-link">立即注册</span>
       </div>
-    </el-form>
+      </el-form>
+    </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogState = 'disabled'">取消</el-button>
@@ -56,22 +62,55 @@ const clickLoginButton = async () => {
 </template>
 
 <style scoped>
-.form-toggle {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #606266;
+.welcome-text {
   text-align: center;
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #303133;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #909399;
+  }
 }
 
-.toggle-link {
-  color: #409EFF;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.3s ease;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .form {
 
-  &:hover {
-    color: #66b1ff;
-    text-decoration: underline;
+    .input {
+      width: 300px;
+    }
+
+    .form-toggle {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #606266;
+    text-align: center;
   }
+
+  .toggle-link {
+    color: #409eff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #66b1ff;
+      text-decoration: underline;
+    }
+  }
+  }
+
+
 }
 </style>
