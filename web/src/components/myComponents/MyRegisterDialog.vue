@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
+import { User, Mail, Lock, LockKeyhole } from '@lucide/vue'
 const dialogState = defineModel<'login' | 'register' | 'disabled'>({ required: true })
 const dialogVisible = computed(() => dialogState.value === 'register')
 const formRef = ref<FormInstance>()
@@ -50,9 +50,6 @@ const clickRegisterButton = async () => {
   })
 }
 
-const handleClose = () => {
-  formRef.value?.resetFields()
-}
 </script>
 
 <template>
@@ -61,24 +58,25 @@ const handleClose = () => {
     title="用户注册"
     width="500"
     align-center
-    @close="handleClose"
+    @close="() => { if (dialogState === 'register') dialogState = 'disabled' }"
     :close-on-click-modal="false"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" status-icon>
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username" placeholder="请输入用户名" />
+    <el-form ref="formRef" :model="form" :rules="rules" status-icon>
+      <el-form-item prop="username">
+        <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User"/>
       </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮箱" />
+      <el-form-item prop="email">
+        <el-input v-model="form.email" placeholder="请输入邮箱" :prefix-icon="Mail"/>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
+      <el-form-item prop="password">
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password />
       </el-form-item>
-      <el-form-item label="确认密码" prop="confirmPassword">
+      <el-form-item prop="confirmPassword">
         <el-input
           v-model="form.confirmPassword"
           type="password"
           placeholder="请再次输入密码"
+          :prefix-icon="LockKeyhole"
           show-password
         />
       </el-form-item>

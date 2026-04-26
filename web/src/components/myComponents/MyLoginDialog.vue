@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
+import { User, Lock } from '@lucide/vue'
 const dialogState = defineModel<'login' | 'register' | 'disabled'>({ required: true })
 const dialogVisible = computed(() => dialogState.value === 'login')
 const formRef = ref<FormInstance>()
@@ -24,9 +24,6 @@ const clickLoginButton = async () => {
   })
 }
 
-const handleClose = () => {
-  formRef.value?.resetFields()
-}
 </script>
 
 <template>
@@ -35,15 +32,15 @@ const handleClose = () => {
     title="用户登录"
     width="500"
     align-center
-    @close="handleClose"
+    @close="() => { if (dialogState === 'login') dialogState = 'disabled' }"
     :close-on-click-modal="false"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" status-icon>
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username" placeholder="请输入用户名" />
+    <el-form ref="formRef" :model="form" :rules="rules" status-icon>
+      <el-form-item prop="username">
+        <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User"/>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
+      <el-form-item prop="password">
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password />
       </el-form-item>
       <div class="form-toggle">
         还没有账号？ <span @click="dialogState = 'register'" class="toggle-link">立即注册</span>
