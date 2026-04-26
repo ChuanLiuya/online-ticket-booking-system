@@ -6,6 +6,9 @@ import { Search } from '@lucide/vue';
 import { ref, type Ref } from 'vue';
 import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue';
 import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
 
 const searchText = ref('');
 
@@ -30,7 +33,8 @@ const clickLoginButton = () => {
         <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
       </div>
       <div class="login">
-        <el-button @click="clickLoginButton">登录</el-button>
+        <el-avatar v-if="userStore.isLoggedIn" class="avatar">{{ userStore?.user?.nickname?.[0] || userStore?.user?.username?.[0] || '用户' }}</el-avatar>
+        <el-avatar v-else class="avatar" @click="clickLoginButton">登录</el-avatar>
       </div>
     </el-header>
 
@@ -116,6 +120,13 @@ const clickLoginButton = () => {
     width: 200px;
     flex-shrink: 0;
     flex-grow: 0;
+    .avatar {
+      cursor: pointer;
+      background: black;
+      &:hover {
+        background: #409eff;
+      }
+    }
   }
 }
 
