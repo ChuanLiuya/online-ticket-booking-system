@@ -6,6 +6,10 @@ import { Search } from '@lucide/vue';
 import { ref } from 'vue';
 
 const searchText = ref('');
+
+const handleLogin = () => {
+  console.log('登录');
+};
 </script>
 
 <template>
@@ -19,7 +23,9 @@ const searchText = ref('');
       <div class="search">
         <el-input placeholder="搜索电影" v-model="searchText" clearable :clear-icon="X" :prefix-icon="Search"></el-input>
       </div>
-      <div class="login">登录</div>
+      <div class="login">
+        <el-button @click="handleLogin">登录</el-button>
+      </div>
     </el-header>
 
 
