@@ -3,7 +3,7 @@ import type { AxiosInstance } from 'axios'
 import { HttpError, NetworkError, ClientError } from '@/utils/errors'
 
 // 创建 axios 实例
-const http: AxiosInstance = axios.create({
+const request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
   timeout: 10000,
   headers: {
@@ -12,7 +12,7 @@ const http: AxiosInstance = axios.create({
 })
 
 // 请求拦截器
-http.interceptors.request.use(
+request.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token')
     if (token && !config.headers?.Authorization) {
@@ -28,7 +28,7 @@ http.interceptors.request.use(
 )
 
 // 响应拦截器
-http.interceptors.response.use(
+request.interceptors.response.use(
   (response) => {
     return response
   },
@@ -47,4 +47,4 @@ http.interceptors.response.use(
   },
 )
 
-export default http
+export default request

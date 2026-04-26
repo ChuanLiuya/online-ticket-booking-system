@@ -7,6 +7,8 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // 全局Cors
+  app.enableCors();
   // 全局验证管道
   app.useGlobalPipes(new GlobalValidatePipe());
   // 全局异常过滤器

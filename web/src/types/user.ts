@@ -23,3 +23,7 @@ export interface LoginReqBody {
   password: string
 }
 
+export interface LoginRespBody {
+  access_token: string
+  user: User
+}

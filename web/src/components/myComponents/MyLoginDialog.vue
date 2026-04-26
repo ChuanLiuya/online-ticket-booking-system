@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { User, Lock } from '@lucide/vue'
+import { useUserStore } from '@/stores/user'
+import { AppError } from '@/utils/errors'
+const userStore = useUserStore()
 const dialogState = defineModel<'login' | 'register' | 'disabled'>({ required: true })
 const dialogVisible = computed(() => dialogState.value === 'login')
 const formRef = ref<FormInstance>()
@@ -17,12 +20,32 @@ const rules = reactive<FormRules>({
 
 const clickLoginButton = async () => {
   if (!formRef.value) return
-  await formRef.value.validate((valid) => {
-    if (valid) {
-      dialogState.value = 'disabled'
+  await formRef.value.validate(async (valid) => {
+    if (!valid) {
+      ElMessage.error('请正确填写信息')
+      return
+    } else {
+      try {
+        await userStore.login(form)
+        ElMessage.success('登录成功')
+        dialogState.value = 'disabled'
+      } catch (error) {
+        if (error instanceof AppError) {
+          ElMessage.error(error.message)
+        } else {
+          ElMessage.error('遇到未知错误，请稍后重试')
+        }
+      }
     }
   })
 }
+
+onMounted(() => {
+  form.username = sessionStorage.getItem('username') || ''
+  form.password = sessionStorage.getItem('password') || ''
+  sessionStorage.removeItem('username')
+  sessionStorage.removeItem('password')
+})
 
 </script>
 
