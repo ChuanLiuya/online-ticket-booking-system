@@ -9,6 +9,8 @@ import { CinemasModule } from './modules/cinemas/cinemas.module';
 import { HallsModule } from './modules/halls/halls.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { SeatsModule } from './modules/seats/seats.module';
+import { ActorsModule } from './modules/actors/actors.module';
+import { DirectorsModule } from './modules/directors/directors.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -41,6 +43,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     HallsModule,
     SessionsModule,
     SeatsModule,
+    ActorsModule,
+    DirectorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
