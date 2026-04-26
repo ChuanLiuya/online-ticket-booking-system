@@ -13,9 +13,6 @@ export class LocalAuthGuard extends AuthGuard('local') {
     user: TUser | null,
     info: { message: string } | undefined,
   ): TUser {
-    console.log('err', err);
-    console.log('user', user);
-    console.log('info', info);
     if (info && info.message === 'Missing credentials') {
       throw new BadRequestException('请输入用户名和密码');
     }
