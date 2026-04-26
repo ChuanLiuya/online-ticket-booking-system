@@ -17,13 +17,13 @@ export class CreateMovieDto {
   @IsOptional()
   poster?: string;
 
-  @IsUUID()
+  @IsUUID(4)
   @IsOptional()
-  director?: string;
+  directorId?: string;
 
-  @IsUUID({ each: true })
+  @IsUUID(4, { each: true })
   @IsOptional()
-  actors?: string[];
+  actorIds?: string[];
 
   @IsInt()
   @Min(1)

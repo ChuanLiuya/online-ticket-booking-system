@@ -4,12 +4,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
-import { Director } from '../../directors/entities/director.entity';
-import { Actor } from '../../actors/entities/actor.entity';
 
 export enum MovieStatus {
   COMING_SOON = 'coming_soon',
@@ -28,18 +23,11 @@ export class Movie {
   @Column({ type: 'varchar', length: 500, nullable: true })
   poster: string;
 
-  // 关联导演表
-  @ManyToOne(() => Director, { nullable: true })
-  director: Director;
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  director: string;
 
-  // 关联演员表（多对多关系）
-  @ManyToMany(() => Actor, { nullable: true })
-  @JoinTable({
-    name: 'movie_actors',
-    joinColumn: { name: 'movie_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'actor_id', referencedColumnName: 'id' }
-  })
-  actors: Actor[];
+  @Column({ type: 'json', nullable: true })
+  actors: string[];
 
   @Column({ type: 'int' })
   duration: number;
@@ -56,7 +44,11 @@ export class Movie {
   @Column({ type: 'decimal', precision: 3, scale: 1, default: 0 })
   rating: number;
 
-  @Column({ type: 'enum', enum: MovieStatus, default: MovieStatus.COMING_SOON })
+  @Column({
+    type: 'enum',
+    enum: MovieStatus,
+    default: MovieStatus.COMING_SOON,
+  })
   status: MovieStatus;
 
   @CreateDateColumn()
