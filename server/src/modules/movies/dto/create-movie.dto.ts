@@ -5,7 +5,6 @@ import {
   IsDate,
   IsEnum,
   Min,
-  IsUUID,
 } from 'class-validator';
 import { MovieStatus } from '../entities/movie.entity';
 
@@ -17,13 +16,13 @@ export class CreateMovieDto {
   @IsOptional()
   poster?: string;
 
-  @IsUUID(4)
+  @IsString({ each: true })
   @IsOptional()
-  directorId?: string;
+  directors?: string[];
 
-  @IsUUID(4, { each: true })
+  @IsString({ each: true })
   @IsOptional()
-  actorIds?: string[];
+  actors?: string[];
 
   @IsInt()
   @Min(1)
@@ -34,8 +33,7 @@ export class CreateMovieDto {
   genres?: string[];
 
   @IsString()
-  @IsOptional()
-  description?: string;
+  description: string;
 
   @IsDate()
   @IsOptional()
