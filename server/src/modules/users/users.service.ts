@@ -13,8 +13,13 @@ export class UsersService {
   ) {}
 
   async register(form: RegisterDto) {
-    form.password = await hashPassword(form.password);
-    return this.usersRepository.save(form);
+    const { username, email, password } = form;
+    const hashedPassword = await hashPassword(password);
+    return this.usersRepository.save({
+      username,
+      email,
+      passwordHash: hashedPassword,
+    });
   }
 
   findOneByUsername(username: string) {
