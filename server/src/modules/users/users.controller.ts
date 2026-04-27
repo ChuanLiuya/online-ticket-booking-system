@@ -16,7 +16,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('me')
   getCurrentUser(@Req() req: { user: User }): ApiResponseDto<User> {
     const user = req.user;
     return new ApiResponseDto('获取用户信息成功', user);

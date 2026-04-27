@@ -3,10 +3,13 @@ import { House } from '@lucide/vue'
 import { Film } from '@lucide/vue'
 import { X } from '@lucide/vue'
 import { Search } from '@lucide/vue'
-import { ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
 import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
 import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
 import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
+import { useUserStore } from '@/stores/user'
+import { AppError } from '@/utils/errors'
+import { ElMessage } from 'element-plus'
 
 const searchText = ref('')
 
@@ -14,6 +17,19 @@ const dialogState: Ref<'login' | 'register' | 'disabled'> = ref('disabled')
 const clickLoginButton = () => {
   dialogState.value = 'login'
 }
+
+onMounted(async () => {
+  try {
+    await useUserStore().getMe()
+    ElMessage.success(`欢迎回来，${useUserStore().user?.nickname || useUserStore().user?.username || '用户'}！`)
+  } catch (error) {
+    if (error instanceof AppError) {
+      ElMessage.error(error.message)
+    } else {
+      ElMessage.error('遇到未知错误')
+    }
+  }
+})
 </script>
 
 <template>
