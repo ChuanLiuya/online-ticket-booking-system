@@ -53,7 +53,7 @@ onMounted(async () => {
 
     <el-container class="body">
       <el-aside width="200px" class="aside">
-        <el-menu default-active="2" class="aside-menu" router>
+        <el-menu :default-active="$route.path" class="aside-menu" router>
           <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             <span>首页</span>
@@ -62,7 +62,7 @@ onMounted(async () => {
             <el-icon><Film /></el-icon>
             <span>活动</span>
           </el-menu-item>
-          <el-menu-item index="/profile">
+          <el-menu-item index="/profile" :class="{ 'is-active': $route.path.startsWith('/profile') }">
             <el-icon><User /></el-icon>
             <span>我的</span>
           </el-menu-item>
