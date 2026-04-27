@@ -25,6 +25,7 @@ const router = createRouter({
         {
           path: '/profile',
           name: 'profile',
+          redirect: '/profile/my-events',
           component: () => import('../view/layout/ProfileView.vue'),
           children: [
             {
