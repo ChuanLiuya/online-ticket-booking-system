@@ -3,9 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { TestModule } from './modules/test/test.module';
-import { MoviesModule } from './modules/movies/movies.module';
-import { CinemasModule } from './modules/cinemas/cinemas.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -32,8 +29,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UsersModule,
     AuthModule,
-    TestModule,
-    MoviesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
