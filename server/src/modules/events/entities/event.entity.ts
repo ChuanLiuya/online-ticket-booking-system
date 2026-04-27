@@ -49,9 +49,6 @@ export class Event {
   @JoinColumn()
   organizer: User;
 
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  image: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
