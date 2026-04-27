@@ -9,7 +9,7 @@ const router = createRouter({
     },
     {
       path: '/layout',
-      component:import('../view/layout/LayoutView.vue'),
+      component: import('../view/layout/LayoutView.vue'),
       redirect: '/home',
       children: [
         {
@@ -21,9 +21,36 @@ const router = createRouter({
           path: '/events',
           name: 'events',
           component: () => import('../view/layout/EventsView.vue'),
-        }
+        },
+        {
+          path: '/profile',
+          name: 'profile',
+          component: () => import('../view/layout/ProfileView.vue'),
+          children: [
+            {
+              path: '/profile/my-events',
+              name: 'my-events',
+              component: () => import('../view/layout/profille/MyEventsView.vue'),
+            },
+            {
+              path: '/profile/joined-events',
+              name: 'joined-events',
+              component: () => import('../view/layout/profille/JoinedEventsView.vue'),
+            },
+            {
+              path: '/profile/orders',
+              name: 'orders',
+              component: () => import('../view/layout/profille/OrdersView.vue'),
+            },
+            {
+              path: '/profile/settings',
+              name: 'settings',
+              component: () => import('../view/layout/profille/SettingsView.vue'),
+            },
+          ],
+                 },
       ],
-    }
+    },
   ],
 })
 

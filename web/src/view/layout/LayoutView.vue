@@ -10,6 +10,7 @@ import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
 import { useUserStore } from '@/stores/user'
 import { AppError } from '@/utils/errors'
 import { ElMessage } from 'element-plus'
+import { User } from '@lucide/vue'
 
 const searchText = ref('')
 
@@ -60,6 +61,10 @@ onMounted(async () => {
           <el-menu-item index="/events">
             <el-icon><Film /></el-icon>
             <span>活动</span>
+          </el-menu-item>
+          <el-menu-item index="/profile">
+            <el-icon><User /></el-icon>
+            <span>我的</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
