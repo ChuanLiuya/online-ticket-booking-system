@@ -35,10 +35,10 @@ onMounted(async () => {
 <template>
   <el-container class="layout">
     <el-header class="header">
-      <div class="logo">在线电影票务</div>
+      <div class="logo">网上购票系统</div>
       <div class="search">
         <el-input
-          placeholder="搜索电影"
+          placeholder="搜索活动"
           v-model="searchText"
           clearable
           :clear-icon="X"
@@ -57,9 +57,9 @@ onMounted(async () => {
             <el-icon><House /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="/movies">
+          <el-menu-item index="/events">
             <el-icon><Film /></el-icon>
-            <span>电影</span>
+            <span>活动</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

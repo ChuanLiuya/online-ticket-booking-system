@@ -5,8 +5,8 @@ const router = useRouter()
 </script>
 <template>
   <div class="container">
-    <h1>欢迎进入电影票务系统</h1>
-    <el-button type="primary" @click="router.push('/layout')">点击进入</el-button>
+    <h1>欢迎进入网上购票系统</h1>
+    <el-button type="primary" @click="router.push('/home')">点击进入</el-button>
   </div>
 </template>
 <style scoped>

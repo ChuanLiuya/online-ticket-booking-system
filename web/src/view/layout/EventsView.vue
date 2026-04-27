@@ -2,7 +2,7 @@
 
 <template>
   <div class="container">
-    <div>movies</div>
+    <div>events</div>
   </div>
 </template>
 
