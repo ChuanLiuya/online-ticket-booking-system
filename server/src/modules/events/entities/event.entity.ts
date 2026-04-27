@@ -6,8 +6,10 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { EventStatus } from '../types/event-status.enum';
 
 @Entity('events')
 export class Event {
@@ -35,16 +37,19 @@ export class Event {
   @Column({ type: 'int', default: 0 })
   maxParticipants: number;
 
+  @Index()
   @Column({ type: 'int', default: 0 })
   currentParticipants: number;
 
+  @Index()
   @Column({
     type: 'enum',
-    default: 'upcoming',
-    enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
+    default: EventStatus.UPCOMING,
+    enum: EventStatus,
   })
-  status: string;
+  status: EventStatus;
 
+  @Index()
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn()
   organizer: User;
