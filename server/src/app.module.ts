@@ -34,7 +34,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthModule,
     TestModule,
     MoviesModule,
-    CinemasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

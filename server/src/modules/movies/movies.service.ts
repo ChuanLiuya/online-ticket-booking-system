@@ -43,11 +43,4 @@ export class MoviesService {
     const movie = await this.findOne(id);
     await this.movieRepository.remove(movie);
   }
-
-  async findByStatus(status: string): Promise<Movie[]> {
-    return await this.movieRepository.find({
-      where: { status: status as any },
-      order: { releasedAt: 'DESC' },
-    });
-  }
 }

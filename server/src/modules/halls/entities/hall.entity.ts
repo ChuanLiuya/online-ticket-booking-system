@@ -12,8 +12,8 @@ import { Cinema } from '../../cinemas/entities/cinema.entity';
 export enum HallType {
   NORMAL = 'normal',
   IMAX = 'imax',
-  3D = '3d',
-  4D = '4d',
+  THREED = '3d',
+  FOURD = '4d',
   VIP = 'vip',
 }
 

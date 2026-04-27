@@ -5,6 +5,7 @@ export interface User {
   email: string
   phone?: string
   nickname?: string
+  role: string
   createdAt: Date
   updatedAt: Date
   lastLoginAt?: Date

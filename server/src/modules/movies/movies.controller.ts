@@ -25,11 +25,6 @@ export class MoviesController {
     return this.moviesService.findAll();
   }
 
-  @Get('status/:status')
-  findByStatus(@Param('status') status: string) {
-    return this.moviesService.findByStatus(status);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.moviesService.findOne(id);
