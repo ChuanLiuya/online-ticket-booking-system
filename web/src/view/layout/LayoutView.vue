@@ -143,10 +143,11 @@ onMounted(async () => {
 .main {
   height: 100%;
   width: 100%;
-  --main-inner-padding: 0px;
+  padding: 0px;
   .main-inner {
     width: 100%;
     height: 100%;
+    padding: 0px;
   }
 }
 </style>
