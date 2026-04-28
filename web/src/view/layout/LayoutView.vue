@@ -86,7 +86,6 @@ onMounted(async () => {
 .layout {
   display: flex;
   flex-direction: column;
-  background: #f5f7fa;
   width: 100%;
   height: 100%;
 }

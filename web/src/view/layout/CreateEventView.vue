@@ -109,7 +109,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" id="container">
     <div class="header">
       <div class="title">创建活动</div>
     </div>
@@ -192,9 +192,11 @@ const resetForm = () => {
 </template>
 
 <style scoped>
+#container {
+  padding: 20px;
+}
 .container {
   margin: 0 auto;
-  padding: 20px;
   background: #f5f5f5;
 }
 
