@@ -63,8 +63,8 @@ onMounted(async () => {
           <div>参与人数: {{ event.currentParticipants }}/{{ event.maxParticipants }}</div>
         </div>
       </div>
-      <div v-if="hotEventsCut.length === 0" class="no-events">暂无热点活动</div>
     </div>
+    <el-empty class="no-events" v-if="hotEventsCut.length === 0" description="暂无热点活动" />
   </div>
 </template>
 
@@ -124,4 +124,5 @@ onMounted(async () => {
     }
   }
 }
+
 </style>
