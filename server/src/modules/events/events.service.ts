@@ -32,4 +32,11 @@ export class EventsService {
       relations: ['organizer'],
     });
   }
+
+  async findOne(id: string): Promise<Event | null> {
+    return this.eventsRepository.findOne({
+      where: { id },
+      relations: ['organizer'],
+    });
+  }
 }

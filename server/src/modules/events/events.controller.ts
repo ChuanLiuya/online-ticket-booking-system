@@ -7,6 +7,8 @@ import {
   Get,
   Query,
   ParseIntPipe,
+  Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -35,5 +37,14 @@ export class EventsController {
   ) {
     const events = await this.eventsService.findHotEvents(limit, page);
     return new ApiResponseDto('获取热点活动成功', events);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const event = await this.eventsService.findOne(id);
+    if (!event) {
+      throw new NotFoundException('活动不存在');
+    }
+    return new ApiResponseDto('获取活动详情成功', event);
   }
 }

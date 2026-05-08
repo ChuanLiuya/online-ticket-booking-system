@@ -9,7 +9,7 @@ export enum EventStatus {
 
 export interface Event {
   //数据库字段
-  id: number;
+  id: string;
   title: string;
   description: string;
   location: string;
