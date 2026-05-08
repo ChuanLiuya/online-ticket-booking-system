@@ -28,6 +28,9 @@ export class User {
   @Column({ type: 'varchar', length: 50, nullable: true })
   nickname: string;
 
+  @Column({ type: 'enum', default: 'user', enum: ['user', 'admin'] })
+  role: string; // 'user' 普通用户 | 'admin' 管理员
+
   @CreateDateColumn()
   createdAt: Date;
 

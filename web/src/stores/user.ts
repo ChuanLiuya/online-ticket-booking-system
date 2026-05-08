@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { LoginReqBody, User } from '@/types/user'
 import { authApi } from '@/apis/auth'
+import { userApi } from '@/apis/user'
 
 export const useUserStore = defineStore('user', () => {
   // 状态
@@ -19,10 +20,18 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('access_token', res.data.data.access_token)
   }
 
+  async function getMe() {
+    const res = await userApi.getMe()
+    user.value = res.data.data
+    access_token.value = localStorage.getItem('access_token') || ''
+    localStorage.setItem('user', JSON.stringify(res.data.data))
+  }
+
   return {
     user,
     access_token,
     isLoggedIn,
     login,
+    getMe,
   }
 })

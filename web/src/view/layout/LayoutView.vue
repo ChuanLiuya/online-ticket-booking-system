@@ -3,10 +3,14 @@ import { House } from '@lucide/vue'
 import { Film } from '@lucide/vue'
 import { X } from '@lucide/vue'
 import { Search } from '@lucide/vue'
-import { ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
 import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
 import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
 import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
+import { useUserStore } from '@/stores/user'
+import { AppError } from '@/utils/errors'
+import { ElMessage } from 'element-plus'
+import { User } from '@lucide/vue'
 
 const searchText = ref('')
 
@@ -14,15 +18,28 @@ const dialogState: Ref<'login' | 'register' | 'disabled'> = ref('disabled')
 const clickLoginButton = () => {
   dialogState.value = 'login'
 }
+
+onMounted(async () => {
+  try {
+    await useUserStore().getMe()
+    ElMessage.success(`欢迎回来，${useUserStore().user?.nickname || useUserStore().user?.username || '用户'}！`)
+  } catch (error) {
+    if (error instanceof AppError) {
+      ElMessage.error(error.message)
+    } else {
+      ElMessage.error('遇到未知错误')
+    }
+  }
+})
 </script>
 
 <template>
   <el-container class="layout">
     <el-header class="header">
-      <div class="logo">在线电影票务</div>
+      <div class="logo">网上购票系统</div>
       <div class="search">
         <el-input
-          placeholder="搜索电影"
+          placeholder="搜索活动"
           v-model="searchText"
           clearable
           :clear-icon="X"
@@ -36,22 +53,27 @@ const clickLoginButton = () => {
 
     <el-container class="body">
       <el-aside width="200px" class="aside">
-        <el-menu default-active="2" class="aside-menu" router>
+        <el-menu :default-active="$route.path" class="aside-menu" :default-openeds="['1']"  router>
           <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="/movies">
+          <el-menu-item index="/events">
             <el-icon><Film /></el-icon>
-            <span>电影</span>
+            <span>活动</span>
           </el-menu-item>
+          <el-sub-menu index="1">
+            <template #title
+              ><el-icon><User /></el-icon><span>我的</span></template
+              >
+            <el-menu-item index="/profile" :class="{ 'is-active': $route.path.startsWith('/profile') }">个人中心</el-menu-item>
+            <el-menu-item index="/create-event">创建活动</el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
 
       <el-main class="main">
-        <div class="main-inner">
-          <RouterView />
-        </div>
+          <RouterView class="main-inner" />
       </el-main>
     </el-container>
   </el-container>
@@ -64,7 +86,6 @@ const clickLoginButton = () => {
 .layout {
   display: flex;
   flex-direction: column;
-  background: #f5f7fa;
   width: 100%;
   height: 100%;
 }
@@ -115,6 +136,17 @@ const clickLoginButton = () => {
   .aside-menu {
     width: 100%;
     height: 100%;
+  }
+}
+
+.main {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  .main-inner {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
   }
 }
 </style>

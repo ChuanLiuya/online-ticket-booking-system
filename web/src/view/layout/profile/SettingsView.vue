@@ -2,7 +2,7 @@
 
 <template>
   <div class="container">
-    <div>movies</div>
+    <div>个人设置</div>
   </div>
 </template>
 

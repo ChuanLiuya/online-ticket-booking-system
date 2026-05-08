@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
+import { EventsModule } from './modules/events/events.module';
 import { AuthModule } from './auth/auth.module';
-import { TestModule } from './modules/test/test.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -29,8 +29,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
     UsersModule,
+    EventsModule,
     AuthModule,
-    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

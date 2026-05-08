@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "dev": "cross-env NODE_ENV=development nest start --watch",
-    "prod": "cross-env NODE_ENV=production node dist/main"
+    "prod": "cross-env NODE_ENV=production node dist/main",
+    "seed": "ts-node src/common/seeds/admin-seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
