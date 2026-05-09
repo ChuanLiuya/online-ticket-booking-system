@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { House } from '@lucide/vue'
-import { Film } from '@lucide/vue'
 import { X } from '@lucide/vue'
 import { Search } from '@lucide/vue'
 import { onMounted, ref, type Ref } from 'vue'
@@ -57,10 +56,6 @@ onMounted(async () => {
           <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             <span>首页</span>
-          </el-menu-item>
-          <el-menu-item index="/events">
-            <el-icon><Film /></el-icon>
-            <span>活动</span>
           </el-menu-item>
           <el-sub-menu index="1">
             <template #title

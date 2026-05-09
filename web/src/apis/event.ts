@@ -13,4 +13,7 @@ export const eventApi = {
   findHot: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<Event[]>>> => {
     return await request.get('/events/hot', { params: { limit, page } })
   },
+  findOne: async (id: string): Promise<AxiosResponse<Response<Event>>> => {
+    return await request.get(`/events/${id}`)
+  },
 }

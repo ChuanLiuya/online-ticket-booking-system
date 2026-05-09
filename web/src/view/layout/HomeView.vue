@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import { computed, onMounted, ref } from 'vue'
 import type { Event } from '@/types/event'
 import { formatDate, formatPrice, formatDuration } from '@/utils/format'
+import router from '@/router'
 
 const hotEvents = ref<Event[]>([])
 const hotEventsCut = computed(() => {
@@ -45,13 +46,16 @@ onMounted(async () => {
     }
   }
 })
+const handleClick = (id: string) => {
+  router.push({ name: 'event-detail', params: { id } })
+}
 </script>
 
 <template>
   <div class="container" id="container">
     <div class="title">热点活动</div>
     <div class="event-list">
-      <div v-for="event in hotEventsCut" :key="event.id" class="event-item">
+      <div v-for="event in hotEventsCut" :key="event.id" class="event-item" @click="handleClick(event.id)">
         <div class="event-title">{{ event.title }}</div>
         <div class="event-description">{{ event.description }}</div>
         <div class="event-info">

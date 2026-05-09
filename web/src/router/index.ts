@@ -18,11 +18,6 @@ const router = createRouter({
           component: () => import('../view/layout/HomeView.vue'),
         },
         {
-          path: '/events',
-          name: 'events',
-          component: () => import('../view/layout/EventsView.vue'),
-        },
-        {
           path: '/profile',
           name: 'profile',
           redirect: '/profile/my-events',
@@ -55,6 +50,11 @@ const router = createRouter({
           name: 'create-event',
           component: () => import('../view/layout/CreateEventView.vue'),
         },
+        {
+          path: '/events/:id',
+          name: 'event-detail',
+          component: () => import('../view/layout/EventDetailView.vue'),
+        }
       ],
     },
   ],
