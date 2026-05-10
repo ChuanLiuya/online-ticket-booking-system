@@ -14,8 +14,22 @@ export class EventsService {
   ) {}
 
   async create(data: CreateEventDto & { organizer: User }): Promise<Event> {
-    const event = this.eventsRepository.create(data);
+    const event = this.eventsRepository.create({
+      ...data,
+      status: this.calculateStatus(data.startTime, data.endTime),
+    });
     return this.eventsRepository.save(event);
+  }
+
+  private calculateStatus(startTime: Date, endTime: Date): EventStatus {
+    const now = new Date();
+    if (now >= startTime && now <= endTime) {
+      return EventStatus.ONGOING;
+    }
+    if (now > endTime) {
+      return EventStatus.COMPLETED;
+    }
+    return EventStatus.UPCOMING;
   }
 
   async findHotEvents(limit: number = 20, page: number = 1): Promise<Event[]> {
