@@ -69,7 +69,7 @@ export class OrdersService {
       order: { createdAt: 'DESC' },
       take: limit,
       skip: offset,
-      relations: ['event'],
+      relations: ['event', 'event.organizer'],
     });
   }
 

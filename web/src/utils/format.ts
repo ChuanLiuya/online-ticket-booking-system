@@ -50,7 +50,29 @@ export function formatPrice(price: number | string): string {
   return `${numPrice.toFixed(2)}元`;
 }
 
-export function formatDate(date: Date): string {
+export function formatOrderStatus(status: string): string {
+  const statusMap: Record<string, string> = {
+    pending: '待支付',
+    paid: '已支付',
+    cancelled: '已取消',
+    refunded: '已退款',
+    completed: '已完成',
+  };
+  return statusMap[status] || status;
+}
+
+export function formatOrderStatusColor(status: string): string {
+  const colorMap: Record<string, string> = {
+    pending: 'warning',
+    paid: 'success',
+    cancelled: 'danger',
+    refunded: 'info',
+    completed: 'primary',
+  };
+  return colorMap[status] || 'default';
+}
+
+export function formatDate(date: Date | string): string {
   const now = new Date();
   const target = new Date(date);
 
