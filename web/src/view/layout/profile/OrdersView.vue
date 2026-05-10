@@ -18,7 +18,6 @@ const handleViewDetail = (order: Order) => {
   dialogVisible.value = true
 }
 
-
 // 加载订单列表
 const loadOrders = async () => {
   loading.value = true
@@ -71,22 +70,28 @@ const handlePayOrder = async (order: Order) => {
     }
   }
 }
+// const searchText = ref('')
 onMounted(() => {
   loadOrders()
 })
+const filterStatus = (value: OrderStatus, row: Order) => {
+  console.log('filterStatus', value, row)
+  return row.status === value
+}
 </script>
 
 <template>
   <div class="container" id="container">
-    <el-table :data="orders" stripe style="width: 100%" :loading="loading">
+    <el-table v-if="orders.length > 0" :data="orders" stripe style="width: 100%" :loading="loading" fit>
       <el-table-column show-overflow-tooltip prop="orderNo" label="订单号" width="200" />
       <el-table-column show-overflow-tooltip prop="event.title" label="活动名称" min-width="200" />
-      <el-table-column show-overflow-tooltip prop="event.location" label="活动地点" min-width="200" />
       <el-table-column
         show-overflow-tooltip
-        label="发起人"
-        width="120"
-      >
+        prop="event.location"
+        label="活动地点"
+        min-width="200"
+      />
+      <el-table-column show-overflow-tooltip label="发起人" width="120">
         <template #default="scope">
           {{ scope.row.event.organizer.nickname || scope.row.event.organizer.username }}
         </template>
@@ -96,10 +101,23 @@ onMounted(() => {
         show-overflow-tooltip
         prop="totalAmount"
         label="总价"
+        sortable
         width="100"
         :formatter="(raw: any, col: any, val: string | number) => formatPrice(val)"
       />
-      <el-table-column show-overflow-tooltip label="订单状态" width="100">
+      <el-table-column
+        show-overflow-tooltip
+        :filters="[
+          { text: '待支付', value: OrderStatus.PENDING },
+          { text: '已支付', value: OrderStatus.PAID },
+          { text: '已取消', value: OrderStatus.CANCELLED },
+          { text: '已完成', value: OrderStatus.COMPLETED },
+          { text: '已退款', value: OrderStatus.REFUNDED },
+        ]"
+        :filter-method="filterStatus"
+        label="订单状态"
+        width="100"
+      >
         <template #default="scope">
           <el-tag :type="OrderStatusColor[scope.row.status as OrderStatus]">
             {{ OrderStatusLabel[scope.row.status as OrderStatus] }}
@@ -111,9 +129,13 @@ onMounted(() => {
         prop="createdAt"
         label="下单时间"
         width="180"
-        :formatter="( row: any, column: any, date: Date | string) => formatDate(date)"
+        sortable
+        :formatter="(row: any, column: any, date: Date | string) => formatDate(date)"
       />
-      <el-table-column label="操作" width="280">
+      <el-table-column label="操作" width="280" fixed="right">
+        <!-- <template #header>
+          <el-input v-model="searchText" size="small" placeholder="搜索订单" />
+        </template> -->
         <template #default="scope">
           <div class="action-buttons">
             <el-button size="small" @click="handleViewDetail(scope.row)">查看详情</el-button>
@@ -137,7 +159,7 @@ onMounted(() => {
         </template>
       </el-table-column>
     </el-table>
-
+    <el-empty v-else description="暂无订单" />
     <!-- 详情弹窗 -->
     <el-dialog title="订单详情" v-model="dialogVisible" width="600px">
       <div v-if="selectedOrder" class="order-detail">
@@ -205,9 +227,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
-#container {
+/* #container {
   padding: 20px;
-}
+} */
 .container {
   background-color: #fff;
 }

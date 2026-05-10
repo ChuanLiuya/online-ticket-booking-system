@@ -47,7 +47,7 @@ export function formatPrice(price: number | string): string {
     return `¥${Math.floor(numPrice)}`;
   }
 
-  return `${numPrice.toFixed(2)}元`;
+  return `¥${numPrice.toFixed(2)}`;
 }
 
 export function formatOrderStatus(status: string): string {

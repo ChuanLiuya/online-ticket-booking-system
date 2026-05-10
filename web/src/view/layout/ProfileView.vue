@@ -20,9 +20,9 @@ watch(
 </script>
 
 <template>
-  <div class="container">
-    <div>个人中心</div>
-    <el-tabs v-model="activeTab" class="profile-tabs">
+  <div class="container" id="container">
+    <div class="title" id="title">个人中心</div>
+    <el-tabs v-model="activeTab" class="profile-tabs" id="profile-tabs">
       <el-tab-pane label="我的活动" name="/profile/my-events" />
       <el-tab-pane label="已参加活动" name="/profile/joined-events" />
       <el-tab-pane label="我的订单" name="/profile/orders" />
@@ -33,7 +33,15 @@ watch(
 </template>
 
 <style scoped>
-.profile-tabs {
-  margin-top: 20px;
+#title {
+  margin: 20px;
 }
+/* #container {
+  padding: 20px;
+} */
+/* .container {
+  margin: 0 auto;
+  padding: 20px;
+} */
+
 </style>
