@@ -36,9 +36,9 @@ watch(
 #title {
   margin: 20px;
 }
-/* #container {
-  padding: 20px;
-} */
+#container {
+  height: 0px;
+}
 /* .container {
   margin: 0 auto;
   padding: 20px;
