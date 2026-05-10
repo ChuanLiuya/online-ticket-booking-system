@@ -8,8 +8,9 @@ import { formatDate, formatPrice, formatDuration } from '@/utils/format'
 import router from '@/router'
 
 const currentPage = ref(1)
-const pageSize = ref(20)
+const pageSize = ref(10)
 const hotEvents = ref<Event[]>([])
+const total = ref(0)
 const hotEventsCut = computed(() => {
   const titleMaxLength = 20
   const descriptionMaxLength = 100
@@ -37,10 +38,23 @@ const hotEventsCut = computed(() => {
 })
 
 async function findHotEvents() {
-try {
+  try {
     const res = await eventApi.findHot(pageSize.value, currentPage.value)
     hotEvents.value = res.data.data || []
     console.log(hotEvents.value)
+  } catch (error) {
+    if (error instanceof AppError) {
+      ElMessage.error(error.message)
+    } else {
+      ElMessage.error('遇到未知错误，请稍后重试')
+    }
+  }
+}
+
+async function countHotEvents() {
+  try {
+    const res = await eventApi.countHot()
+    total.value = res.data.data || 0
   } catch (error) {
     if (error instanceof AppError) {
       ElMessage.error(error.message)
@@ -57,8 +71,9 @@ const handleCurrentChange = () => {
 const handleClick = (id: string) => {
   router.push({ name: 'event-detail', params: { id } })
 }
-onMounted(() => {
-  findHotEvents()
+onMounted(async () => {
+  await findHotEvents()
+  await countHotEvents()
 })
 
 
@@ -90,7 +105,7 @@ onMounted(() => {
       v-model:page-size="pageSize"
       background
       layout="prev, pager, next, jumper"
-      :total="1000"
+      :total="total"
       @current-change="handleCurrentChange"
       />
     </div>

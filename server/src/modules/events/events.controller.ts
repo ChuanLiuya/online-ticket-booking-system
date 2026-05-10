@@ -47,4 +47,10 @@ export class EventsController {
     }
     return new ApiResponseDto('获取活动详情成功', event);
   }
+
+  @Get('hot/count')
+  async countHotEvents() {
+    const count = await this.eventsService.countHotEvents();
+    return new ApiResponseDto('获取热点活动总数成功', count);
+  }
 }

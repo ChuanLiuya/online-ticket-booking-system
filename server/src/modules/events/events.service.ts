@@ -53,4 +53,12 @@ export class EventsService {
       relations: ['organizer'],
     });
   }
+
+  async countHotEvents(): Promise<number> {
+    return this.eventsRepository.count({
+      where: {
+        status: EventStatus.UPCOMING,
+      },
+    });
+  }
 }
