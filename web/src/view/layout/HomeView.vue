@@ -7,6 +7,8 @@ import type { Event } from '@/types/event'
 import { formatDate, formatPrice, formatDuration } from '@/utils/format'
 import router from '@/router'
 
+const currentPage = ref(1)
+const pageSize = ref(20)
 const hotEvents = ref<Event[]>([])
 const hotEventsCut = computed(() => {
   const titleMaxLength = 20
@@ -33,9 +35,10 @@ const hotEventsCut = computed(() => {
     }
   })
 })
-onMounted(async () => {
-  try {
-    const res = await eventApi.findHot()
+
+async function findHotEvents() {
+try {
+    const res = await eventApi.findHot(pageSize.value, currentPage.value)
     hotEvents.value = res.data.data || []
     console.log(hotEvents.value)
   } catch (error) {
@@ -45,10 +48,22 @@ onMounted(async () => {
       ElMessage.error('遇到未知错误，请稍后重试')
     }
   }
-})
+}
+
+
+const handleCurrentChange = () => {
+  findHotEvents()
+}
 const handleClick = (id: string) => {
   router.push({ name: 'event-detail', params: { id } })
 }
+onMounted(() => {
+  findHotEvents()
+})
+
+
+
+
 </script>
 
 <template>
@@ -69,6 +84,17 @@ const handleClick = (id: string) => {
       </div>
     </div>
     <el-empty class="no-events" v-if="hotEventsCut.length === 0" description="暂无热点活动" />
+    <div class="pagination-container">
+      <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      background
+      layout="prev, pager, next, jumper"
+      :total="1000"
+      @current-change="handleCurrentChange"
+      />
+    </div>
+
   </div>
 </template>
 
@@ -86,7 +112,13 @@ const handleClick = (id: string) => {
   font-size: 24px;
   font-weight: bold;
 }
-
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  text-align: center;
+}
 .event-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
