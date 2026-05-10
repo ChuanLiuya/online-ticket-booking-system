@@ -45,7 +45,9 @@ export const OrderStatusLabel: Record<OrderStatus, string> = {
   [OrderStatus.COMPLETED]: '已完成',
 };
 
-export const OrderStatusColor: Record<OrderStatus, string> = {
+export type TagType = 'primary' | 'success' | 'warning' | 'danger' | 'info';
+
+export const OrderStatusColor: Record<OrderStatus, TagType> = {
   [OrderStatus.PENDING]: 'warning',
   [OrderStatus.PAID]: 'success',
   [OrderStatus.CANCELLED]: 'danger',
