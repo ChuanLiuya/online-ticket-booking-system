@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { orderApi } from '@/apis/order'
 import { AppError } from '@/utils/errors'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Order } from '@/types/order'
 import { formatDate, formatPrice } from '@/utils/format'
 import { OrderStatus, OrderStatusLabel, OrderStatusColor } from '@/types/order'
+
+const router = useRouter()
 const orders = ref<Order[]>([])
 const loading = ref(false)
 const total = ref(0)
@@ -84,7 +87,13 @@ const filterStatus = (value: OrderStatus, row: Order) => {
   <div class="container" id="container">
     <el-table v-if="orders.length > 0" :data="orders" stripe style="width: 100%" :loading="loading" fit>
       <el-table-column show-overflow-tooltip prop="orderNo" label="订单号" width="200" />
-      <el-table-column show-overflow-tooltip prop="event.title" label="活动名称" min-width="200" />
+      <el-table-column show-overflow-tooltip label="活动名称" min-width="200">
+        <template #default="scope">
+          <span class="event-link" @click="router.push(`/events/${scope.row.event.id}`)">
+            {{ scope.row.event.title }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
         show-overflow-tooltip
         prop="event.location"
@@ -262,5 +271,12 @@ const filterStatus = (value: OrderStatus, row: Order) => {
   color: #ef4444;
   font-size: 18px;
   font-weight: bold;
+}
+.event-link {
+  cursor: pointer;
+}
+.event-link:hover {
+  color: #409eff;
+  text-decoration: underline;
 }
 </style>
