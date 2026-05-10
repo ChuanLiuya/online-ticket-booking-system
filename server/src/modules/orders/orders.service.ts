@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { User } from '../users/entities/user.entity';
@@ -33,6 +33,18 @@ export class OrdersService {
 
     if (!event) {
       throw new NotFoundException('活动不存在');
+    }
+
+    const existingOrder = await this.ordersRepository.findOne({
+      where: {
+        user: { id: user.id },
+        event: { id: data.eventId },
+        status: Not(In([OrderStatus.CANCELLED, OrderStatus.REFUNDED])),
+      },
+    });
+
+    if (existingOrder) {
+      throw new ConflictException('您已报名该活动');
     }
 
     if (event.currentParticipants + data.quantity > event.maxParticipants) {
