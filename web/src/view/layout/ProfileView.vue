@@ -39,9 +39,7 @@ watch(
 #container {
   height: 0px;
 }
-/* .container {
-  margin: 0 auto;
-  padding: 20px;
-} */
-
+.profile-tabs {
+  padding: 0 32px;
+}
 </style>
