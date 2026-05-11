@@ -23,8 +23,9 @@ export const useOrderStore = defineStore('order', () => {
    */
   async function loadOrders() {
     const res = await orderApi.getMyOrders()
-    orders.value = res.data.data
-    orderTotal.value = res.data.data.length
+    console.log('加载用户的订单列表成功', res)
+    orders.value = res.data.data.orders
+    orderTotal.value = res.data.data.total
     eventTotal.value = joinedEvents.value.length
   }
   /**

@@ -8,7 +8,7 @@ export const orderApi = {
     return await request.post('/orders', data);
   },
 
-  getMyOrders: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<Order[]>>> => {
+  getMyOrders: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<{ total: number; orders: Order[] }>>> => {
     return await request.get('/orders/my', { params: { limit, page } });
   },
 

@@ -41,7 +41,8 @@ export class OrdersController {
       limit,
       page,
     );
-    return new ApiResponseDto('获取我的订单成功', orders);
+    const total = await this.ordersService.countByUser(req.user.id);
+    return new ApiResponseDto('获取我的订单成功', { total, orders });
   }
 
   @Get(':id')

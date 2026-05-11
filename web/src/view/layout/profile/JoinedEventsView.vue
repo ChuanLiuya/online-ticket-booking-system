@@ -47,8 +47,9 @@ onMounted(() => {
         sortable
         label="开始时间"
         :formatter="(raw: any, col: any, val: any) => formatDate(val)"
+        width="150"
       />
-      <el-table-column show-overflow-tooltip label="持续时间" min-width="120">
+      <el-table-column show-overflow-tooltip label="持续时间" width="auto">
         <template #default="scope">
           {{ formatDuration(scope.row.startTime, scope.row.endTime) }}
         </template>

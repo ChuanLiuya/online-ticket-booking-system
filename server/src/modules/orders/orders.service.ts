@@ -142,4 +142,14 @@ export class OrdersService {
     }
     return updatedOrder;
   }
+  /**
+   * 统计用户订单数量
+   * @param userId 用户ID
+   * @returns 订单数量
+   */
+  async countByUser(userId: string): Promise<number> {
+    return this.ordersRepository.count({
+      where: { user: { id: userId } },
+    });
+  }
 }
