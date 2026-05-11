@@ -7,13 +7,13 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Order } from '@/types/order'
 import { formatDate, formatPrice } from '@/utils/format'
 import { OrderStatus, OrderStatusLabel, OrderStatusColor } from '@/types/order'
+import MyOrderDialog from './MyOrderDialog.vue'
 
 const router = useRouter()
 const orders = ref<Order[]>([])
 const loading = ref(false)
 const total = ref(0)
 
-// 详情弹窗
 const dialogVisible = ref(false)
 const selectedOrder = ref<Order | null>(null)
 const handleViewDetail = (order: Order) => {
@@ -169,76 +169,11 @@ const filterStatus = (value: OrderStatus, row: Order) => {
       </el-table-column>
     </el-table>
     <el-empty v-else description="暂无订单" />
-    <!-- 详情弹窗 -->
-    <el-dialog title="订单详情" v-model="dialogVisible" width="600px">
-      <div v-if="selectedOrder" class="order-detail">
-        <div class="detail-row">
-          <span class="label">订单号：</span>
-          <span class="value">{{ selectedOrder.orderNo }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">活动名称：</span>
-          <span class="value">{{ selectedOrder.event.title }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">活动地点：</span>
-          <span class="value">{{ selectedOrder.event.location }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">活动时间：</span>
-          <span class="value"
-            >{{ formatDate(selectedOrder.event.startTime) }} -
-            {{ formatDate(selectedOrder.event.endTime) }}</span
-          >
-        </div>
-        <div class="detail-row">
-          <span class="label">发起人：</span>
-          <span class="value">{{ selectedOrder.event.organizer.nickname }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">购买数量：</span>
-          <span class="value">{{ selectedOrder.quantity }} 张</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">单价：</span>
-          <span class="value">¥{{ selectedOrder.unitPrice }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">总价：</span>
-          <span class="value total">¥{{ selectedOrder.totalAmount }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">订单状态：</span>
-          <span class="value">
-            <el-tag :type="OrderStatusColor[selectedOrder.status]">{{
-              OrderStatusLabel[selectedOrder.status]
-            }}</el-tag>
-          </span>
-        </div>
-        <div class="detail-row">
-          <span class="label">下单时间：</span>
-          <span class="value">{{ formatDate(selectedOrder.createdAt) }}</span>
-        </div>
-        <div class="detail-row" v-if="selectedOrder.paidAt">
-          <span class="label">支付时间：</span>
-          <span class="value">{{ formatDate(selectedOrder.paidAt) }}</span>
-        </div>
-        <div class="detail-row" v-if="selectedOrder.cancelledAt">
-          <span class="label">取消时间：</span>
-          <span class="value">{{ formatDate(selectedOrder.cancelledAt) }}</span>
-        </div>
-      </div>
-      <template #footer>
-        <el-button @click="dialogVisible = false">关闭</el-button>
-      </template>
-    </el-dialog>
+    <MyOrderDialog v-model="dialogVisible" :order="selectedOrder" />
   </div>
 </template>
 
 <style scoped>
-/* #container {
-  padding: 20px;
-} */
 .container {
   background-color: #fff;
 }
@@ -246,31 +181,6 @@ const filterStatus = (value: OrderStatus, row: Order) => {
   display: flex;
   gap: 8px;
   white-space: nowrap;
-}
-.order-detail {
-  padding: 10px;
-}
-.detail-row {
-  display: flex;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-.detail-row:last-child {
-  border-bottom: none;
-}
-.label {
-  width: 120px;
-  font-weight: 500;
-  color: #666;
-}
-.value {
-  flex: 1;
-  color: #333;
-}
-.value.total {
-  color: #ef4444;
-  font-size: 18px;
-  font-weight: bold;
 }
 .event-link {
   cursor: pointer;
