@@ -6,7 +6,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Order } from '@/types/order'
 import { formatDate, formatPrice } from '@/utils/format'
 import { OrderStatus, OrderStatusLabel, OrderStatusColor } from '@/types/order'
-import MyOrderDialog from './MyOrderDialog.vue'
+import MyOrderDialog from '@/components/myComponents/MyOrderDialog.vue'
 import { useOrderStore } from '@/stores/order'
 
 const orderStore = useOrderStore()
