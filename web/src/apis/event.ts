@@ -19,4 +19,7 @@ export const eventApi = {
   countHot: async (): Promise<AxiosResponse<Response<number>>> => {
     return await request.get('/events/hot/count')
   },
+  findMyEvents: async (): Promise<AxiosResponse<Response<Event[]>>> => {
+    return await request.get('/events/my')
+  },
 }

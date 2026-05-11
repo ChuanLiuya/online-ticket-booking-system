@@ -39,6 +39,13 @@ export class EventsController {
     return new ApiResponseDto('获取热点活动成功', events);
   }
 
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  async findMyEvents(@Req() req: { user: User }) {
+    const events = await this.eventsService.findByOrganizer(req.user.id);
+    return new ApiResponseDto('获取我的活动成功', events);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const event = await this.eventsService.findOne(id);

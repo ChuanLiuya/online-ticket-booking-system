@@ -61,4 +61,16 @@ export class EventsService {
       },
     });
   }
+
+  async findByOrganizer(organizerId: string): Promise<Event[]> {
+    return this.eventsRepository.find({
+      where: {
+        organizer: { id: organizerId },
+      },
+      order: {
+        startTime: 'DESC',
+      },
+      relations: ['organizer'],
+    });
+  }
 }
