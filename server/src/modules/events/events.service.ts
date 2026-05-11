@@ -62,6 +62,25 @@ export class EventsService {
     });
   }
 
+  /**
+   * 更新活动信息
+   *
+   * 根据提供的ID和数据，在数据库中修改对应的活动记录。
+   * @param {number|string} id - 活动ID，唯一标识一个活动
+   * @param {UpdateEventDto} data - 更新活动的字段值
+   * @param {User} user - 当前登录用户，用于检查用户权限
+   * @returns {Promise<Object>} 返回更新后的完整活动对象
+   * @example
+   * // 调用示例
+   * const updated = await update('019ff143-f937-4ca3-a037-8927d7e5c728', { title: '新标题' }, currentUser);
+   * console.log(updated.title);
+   * // 函数流程
+   * 1. 根据提供的ID检查活动是否存在
+   * 2. 检查用户是否为活动组织者
+   * 3. 检查最大参与人数是否小于当前参与人数
+   * 4. 更新活动信息
+   * 5. 返回更新后的活动对象
+   */
   async update(id: string, data: UpdateEventDto, user: User): Promise<Event> {
     const event = await this.findOne(id);
     if (!event) {
@@ -69,6 +88,9 @@ export class EventsService {
     }
     if (event.organizer.id !== user.id) {
       throw new Error('只有活动组织者才能更新活动');
+    }
+    if (data.maxParticipants < event.currentParticipants) {
+      throw new Error('最大参与人数不能小于当前参与人数');
     }
     Object.assign(event, data);
     event.status = this.calculateStatus(event.startTime, event.endTime);
