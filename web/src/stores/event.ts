@@ -1,5 +1,5 @@
 import { eventApi } from '@/apis/event'
-import type { Event } from '@/types/event'
+import type { Event, updateEventReqBody } from '@/types/event'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -19,18 +19,27 @@ export const useEventStore = defineStore('event', () => {
     }
   }
 
-
-  // function updateEvent(updatedEvent: Event) {
-
-  // }
-
-  // function removeEvent(eventId: string) {
-  // }
+  async function findEvent(id: string) {
+    const res = await eventApi.findOne(id)
+    return res.data.data
+  }
+  /**
+   * 更新活动信息
+   * @param eventId 活动ID
+   * @param updatedEvent 提交的更新信息
+   * @returns 更新后的活动信息
+   */
+  async function updateEvent(eventId: string, updatedEvent: updateEventReqBody) {
+    const res = await eventApi.update(eventId, updatedEvent)
+    return res.data.data
+  }
 
   return {
     events,
     total,
     loading,
     loadMyEvents,
+    findEvent,
+    updateEvent,
   }
 })

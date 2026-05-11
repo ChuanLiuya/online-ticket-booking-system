@@ -6,13 +6,26 @@ import { AppError } from '@/utils/errors'
 import { formatDate, formatDuration, formatPrice } from '@/utils/format'
 import { EventStatus, EventStatusLabel, EventStatusColor } from '@/types/event'
 import { useEventStore } from '@/stores/event'
+import type { Event } from '@/types/event'
+import MyEventDialog from '@/components/myComponents/MyEventDialog.vue'
 
 const router = useRouter()
 const eventStore = useEventStore()
 const loading = ref(false)
+const dialogVisible = ref(false)
+const selectedEvent = ref<Event | null>(null)
 
 const filterStatus = (value: EventStatus, row: { status: EventStatus }) => {
   return row.status === value
+}
+
+const viewDetail = (event: Event) => {
+  selectedEvent.value = event
+  dialogVisible.value = true
+}
+
+const handleEditButtonClick = (event: Event) => {
+  router.push(`/edit-event/${event.id}`)
 }
 
 async function loadEvents() {
@@ -97,7 +110,6 @@ onMounted(() => {
           :filter-method="filterStatus"
           label="活动状态"
           width="100"
-          fixed="right"
         >
           <template #default="scope">
             <el-tag :type="EventStatusColor[scope.row.status as EventStatus]">
@@ -105,10 +117,17 @@ onMounted(() => {
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column show-overflow-tooltip label="操作" width="160" fixed="right">
+          <template #default="scope">
+            <el-button size="small" @click="viewDetail(scope.row)">查看详情</el-button>
+            <el-button size="small" type="primary" @click="handleEditButtonClick(scope.row)">修改</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-empty v-else description="暂无活动，快去创建一个活动吧~" />
     </div>
 
+    <MyEventDialog :event="selectedEvent" v-model="dialogVisible" />
 </template>
 
 <style scoped>

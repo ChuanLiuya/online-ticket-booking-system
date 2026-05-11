@@ -9,12 +9,13 @@ import {
   ParseIntPipe,
   Param,
   NotFoundException,
+  Patch,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from '../users/entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
-import { CreateEventDto } from './dto/create-event.dto';
+import { CreateEventDto, UpdateEventDto } from './dto/create-event.dto';
 
 @Controller('events')
 export class EventsController {
@@ -59,5 +60,16 @@ export class EventsController {
   async countHotEvents() {
     const count = await this.eventsService.countHotEvents();
     return new ApiResponseDto('获取热点活动总数成功', count);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateEventDto,
+    @Req() req: { user: User },
+  ) {
+    const event = await this.eventsService.update(id, data, req.user);
+    return new ApiResponseDto('更新活动成功', event);
   }
 }

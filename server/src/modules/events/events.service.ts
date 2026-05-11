@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateEventDto } from './dto/create-event.dto';
+import { CreateEventDto, UpdateEventDto } from './dto/create-event.dto';
 import { User } from '../users/entities/user.entity';
 import { EventStatus } from './types/event-status.enum';
 
@@ -60,6 +60,19 @@ export class EventsService {
         status: EventStatus.UPCOMING,
       },
     });
+  }
+
+  async update(id: string, data: UpdateEventDto, user: User): Promise<Event> {
+    const event = await this.findOne(id);
+    if (!event) {
+      throw new Error('活动不存在');
+    }
+    if (event.organizer.id !== user.id) {
+      throw new Error('只有活动组织者才能更新活动');
+    }
+    Object.assign(event, data);
+    event.status = this.calculateStatus(event.startTime, event.endTime);
+    return this.eventsRepository.save(event);
   }
 
   async findByOrganizer(organizerId: string): Promise<Event[]> {

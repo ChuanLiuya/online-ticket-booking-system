@@ -2,7 +2,7 @@ import type { AxiosResponse } from 'axios'
 import request from '@/utils/request'
 import type { Response } from '@/types/respones'
 
-import type { createEventReqBody, Event } from '@/types/event'
+import type { createEventReqBody, Event, updateEventReqBody } from '@/types/event'
 
 
 
@@ -21,5 +21,8 @@ export const eventApi = {
   },
   findMyEvents: async (): Promise<AxiosResponse<Response<Event[]>>> => {
     return await request.get('/events/my')
+  },
+  update: async (id: string, data: updateEventReqBody): Promise<AxiosResponse<Response<Event>>> => {
+    return await request.patch(`/events/${id}`, data)
   },
 }

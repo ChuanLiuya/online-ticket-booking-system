@@ -30,7 +30,7 @@ export interface Event {
   location: string;
   startTime: Date;
   endTime: Date;
-  price: number;
+  price: string;
   maxParticipants: number;
   currentParticipants: number;
   status: EventStatus;
@@ -49,4 +49,9 @@ export interface createEventReqBody {
   endTime: Date;
   price: number;
   maxParticipants: number;
+}
+
+export interface updateEventReqBody extends createEventReqBody {
+  status: EventStatus;
+  image: string;
 }
