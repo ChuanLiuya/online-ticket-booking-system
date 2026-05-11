@@ -1,23 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { orderApi } from '@/apis/order'
 import { AppError } from '@/utils/errors'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Order } from '@/types/order'
 import { formatDate, formatPrice } from '@/utils/format'
 import { OrderStatus, OrderStatusLabel, OrderStatusColor } from '@/types/order'
 import MyOrderDialog from './MyOrderDialog.vue'
+import { useOrderStore } from '@/stores/order'
 
+const orderStore = useOrderStore()
 const router = useRouter()
-const orders = ref<Order[]>([])
 const loading = ref(false)
-const total = ref(0)
 
 const dialogVisible = ref(false)
-const selectedOrder = ref<Order | null>(null)
 const handleViewDetail = (order: Order) => {
-  selectedOrder.value = order
+  orderStore.setSelectedOrder(order)
   dialogVisible.value = true
 }
 
@@ -25,10 +23,7 @@ const handleViewDetail = (order: Order) => {
 const loadOrders = async () => {
   loading.value = true
   try {
-    const res = await orderApi.getMyOrders()
-    console.log('getMyOrders调用成功，返回数据: ', '\n', res.data.data)
-    orders.value = res.data.data
-    total.value = res.data.data.length
+    await orderStore.loadOrders()
   } catch (error) {
     if (error instanceof AppError) {
       ElMessage.error(error.message)
@@ -47,7 +42,7 @@ const handleCancelOrder = async (order: Order) => {
       cancelButtonText: '取消',
       type: 'warning',
     })
-    await orderApi.updateStatus(order.id, { status: OrderStatus.CANCELLED })
+    await orderStore.cancelOrder(order)
     ElMessage.success('订单已取消')
     loadOrders()
   } catch (error) {
@@ -62,7 +57,7 @@ const handleCancelOrder = async (order: Order) => {
 }
 const handlePayOrder = async (order: Order) => {
   try {
-    await orderApi.updateStatus(order.id, { status: OrderStatus.PAID })
+    await orderStore.payOrder(order)
     ElMessage.success('支付成功')
     loadOrders()
   } catch (error) {
@@ -85,7 +80,7 @@ const filterStatus = (value: OrderStatus, row: Order) => {
 
 <template>
   <div class="container" id="container">
-    <el-table v-if="orders.length > 0" :data="orders" stripe style="width: 100%" :loading="loading" fit>
+    <el-table v-if="orderStore.orders.length > 0" :data="orderStore.orders" stripe style="width: 100%" :loading="loading" fit>
       <el-table-column show-overflow-tooltip prop="orderNo" label="订单号" width="200" />
       <el-table-column show-overflow-tooltip label="活动名称" min-width="200">
         <template #default="scope">
@@ -169,7 +164,7 @@ const filterStatus = (value: OrderStatus, row: Order) => {
       </el-table-column>
     </el-table>
     <el-empty v-else description="暂无订单" />
-    <MyOrderDialog v-model="dialogVisible" :order="selectedOrder" />
+    <MyOrderDialog v-model="dialogVisible" :order="orderStore.selectedOrder" />
   </div>
 </template>
 
