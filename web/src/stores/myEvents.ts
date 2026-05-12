@@ -3,7 +3,7 @@ import type { Event, updateEventReqBody } from '@/types/event'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useEventStore = defineStore('event', () => {
+export const useMyEventsStore = defineStore('myEvents', () => {
   const events = ref<Event[]>([])
   const total = ref(0)
   const loading = ref(false)

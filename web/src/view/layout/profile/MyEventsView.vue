@@ -5,14 +5,14 @@ import { ElMessage } from 'element-plus'
 import { AppError } from '@/utils/errors'
 import { formatDate, formatDuration, formatPrice } from '@/utils/format'
 import { EventStatus, EventStatusLabel, EventStatusColor } from '@/types/event'
-import { useEventStore } from '@/stores/event'
+import { useMyEventsStore } from '@/stores/myEvents'
 import type { Event } from '@/types/event'
 import MyEventDialog from '@/components/myComponents/MyEventDialog.vue'
 
 const currentPage = ref(1)
 const pageSize = ref(20)
 const router = useRouter()
-const eventStore = useEventStore()
+const myEventsStore = useMyEventsStore()
 const loading = ref(false)
 const dialogVisible = ref(false)
 const selectedEvent = ref<Event | null>(null)
@@ -33,7 +33,7 @@ const handleEditButtonClick = (event: Event) => {
 async function loadEvents() {
   loading.value = true
   try {
-    await eventStore.loadMyEvents(pageSize.value, currentPage.value)
+    await myEventsStore.loadMyEvents(pageSize.value, currentPage.value)
   } catch (error) {
     if (error instanceof AppError) {
       ElMessage.error(error.message)
@@ -57,7 +57,7 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <el-table v-if="eventStore.total > 0" :data="eventStore.events" stripe :loading="loading" fit>
+    <el-table v-if="myEventsStore.total > 0" :data="myEventsStore.events" stripe :loading="loading" fit>
       <el-table-column show-overflow-tooltip label="活动名称" min-width="200">
         <template #default="scope">
           <span class="event-link" @click="router.push(`/events/${scope.row.id}`)">
@@ -133,7 +133,7 @@ onMounted(() => {
         v-model:page-size="pageSize"
         background
         layout="prev, pager, next, jumper"
-        :total="eventStore.total"
+        :total="myEventsStore.total"
         @current-change="handleCurrentChange"
       />
     </div>

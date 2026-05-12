@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { ElMessage, ElLoading, type FormRules, type FormInstance } from 'element-plus'
 import { EventStatus, type updateEventReqBody } from '@/types/event'
 import { AppError } from '@/utils/errors'
-import { useEventStore } from '@/stores/event'
+import { useEventStore } from '@/stores/myEvents'
 import router from '@/router'
 
 const route = useRoute()
