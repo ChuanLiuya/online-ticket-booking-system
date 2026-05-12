@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { EventsModule } from './modules/events/events.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -34,6 +35,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     UsersModule,
     EventsModule,
     OrdersModule,
+    TicketsModule,
     AuthModule,
   ],
   controllers: [AppController],
