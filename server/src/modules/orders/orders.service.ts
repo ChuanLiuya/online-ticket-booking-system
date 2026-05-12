@@ -97,7 +97,7 @@ export class OrdersService {
 
     return this.ordersRepository.findOne({
       where: query,
-      relations: ['event', 'user'],
+      relations: ['event', 'event.organizer', 'user'],
     });
   }
 
