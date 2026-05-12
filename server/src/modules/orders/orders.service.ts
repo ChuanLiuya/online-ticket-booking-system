@@ -12,7 +12,7 @@ import { OrderStatus } from './types/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
 import { TicketsService } from '../tickets/tickets.service';
-import { Ticket } from '../tickets/entities/ticket.entity';
+import { PayParamsDto } from './dto/pay-params.dto';
 
 @Injectable()
 export class OrdersService {
@@ -157,59 +157,78 @@ export class OrdersService {
     });
   }
   /**
-   * 支付订单
-   * @param id 订单ID
-   * @param body 支付订单，包含支付方式和交易ID（可选）
-   * @param userId 支付者ID
-   * @returns 支付后的订单和对应的门票
-   * @throws NotFoundException 订单不存在
-   * @throws ConflictException 订单已支付或状态不允许支付或您不是订单所有者
-   * @description 支付订单，更新订单状态为已支付并创建对应的门票
+   * 生成模拟交易码
+   * @returns 模拟交易码
    */
-  async payOrder(
-    id: string,
-    body: PayOrderDto,
+  private generateMockTransactionId(): string {
+    const timestamp = Date.now().toString().slice(-10);
+    const random = Math.random().toString(36).slice(-8).toUpperCase();
+    return `MOCK${timestamp}${random}`;
+  }
+
+  private async waitPaymentFinish(
+    orderId: string,
+    paymentMethod: string,
     userId: string,
-  ): Promise<{ paidOrder: Order; tickets: Ticket[] }> {
-    const { paymentMethod, transactionId } = body;
+  ): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const mockTransactionId = this.generateMockTransactionId();
+    await this.ordersRepository.update(orderId, {
+      status: OrderStatus.PAID,
+      paymentMethod,
+      transactionId: mockTransactionId,
+      paidAt: new Date(),
+    });
+
     const order = await this.ordersRepository.findOne({
-      where: { id },
+      where: { id: orderId },
       relations: ['event', 'user'],
     });
+
+    if (!order) {
+      console.error('订单不存在:', orderId);
+      return;
+    }
+
+    for (let i = 0; i < order.quantity; i++) {
+      await this.ticketsService.create(
+        { eventId: order.event.id, orderId },
+        userId,
+      );
+    }
+
+    console.log(`订单 ${orderId} 模拟支付成功，已出票`);
+  }
+
+  async createPayment(
+    orderId: string,
+    body: PayOrderDto,
+    userId: string,
+  ): Promise<PayParamsDto> {
+    const { paymentMethod } = body;
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: ['event', 'user'],
+    });
+
     if (!order) {
       throw new NotFoundException('订单不存在');
     }
+
+    if (order.user.id !== userId) {
+      throw new ConflictException('您不是订单所有者');
+    }
+
     if (order.status === OrderStatus.PAID) {
       throw new ConflictException('订单已支付，无需重复支付');
     }
     if (order.status !== OrderStatus.PENDING) {
       throw new ConflictException('订单状态不允许支付');
     }
-    const updateData: Record<string, unknown> = {
-      status: OrderStatus.PAID,
-      paymentMethod,
-      transactionId,
-    };
-    await this.ordersRepository.update(id, updateData);
-    const updatedOrder = await this.ordersRepository.findOne({
-      where: { id },
-      relations: ['event', 'user'],
-    });
-    if (!updatedOrder) {
-      throw new NotFoundException('订单不存在');
-    }
-    if (order.user.id !== userId) {
-      throw new ConflictException('您不是订单所有者');
-    }
-    const tickets: Ticket[] = [];
-    for (let i = 0; i < order.quantity; i++) {
-      tickets.push(
-        await this.ticketsService.create(
-          { eventId: order.event.id, orderId: id },
-          userId,
-        ),
-      );
-    }
-    return { paidOrder: updatedOrder, tickets };
+
+    void this.waitPaymentFinish(orderId, paymentMethod, userId);
+
+    return { message: '这是模拟交易的二维码' };
   }
 }

@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import request from '@/utils/request';
 import type { Response } from '@/types/respones';
-import type { Order, CreateOrderReqBody, UpdateOrderStatusReqBody } from '@/types/order';
+import type { Order, CreateOrderReqBody, UpdateOrderStatusReqBody, CreatePaymentReqBody, PayParams } from '@/types/order';
 
 export const orderApi = {
   create: async (data: CreateOrderReqBody): Promise<AxiosResponse<Response<Order>>> => {
@@ -18,5 +18,9 @@ export const orderApi = {
 
   updateStatus: async (id: string, data: UpdateOrderStatusReqBody): Promise<AxiosResponse<Response<Order>>> => {
     return await request.patch(`/orders/${id}/status`, data);
+  },
+
+  createPayment: async (orderId: string, data: CreatePaymentReqBody): Promise<AxiosResponse<Response<PayParams>>> => {
+    return await request.patch(`/orders/${orderId}/payment`, data);
   },
 };

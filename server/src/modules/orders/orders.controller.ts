@@ -18,8 +18,7 @@ import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
 import { OrderStatus } from './types/order-status.enum';
-import { Order } from './entities/order.entity';
-import { Ticket } from '../tickets/entities/ticket.entity';
+import { PayParamsDto } from './dto/pay-params.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -72,18 +71,18 @@ export class OrdersController {
     return new ApiResponseDto('更新订单状态成功', order);
   }
 
-  @Patch(':id/pay')
+  @Patch(':id/payment')
   @UseGuards(JwtAuthGuard)
-  async payOrder(
-    @Param('id') id: string,
+  async createPayment(
+    @Param('id') orderId: string,
     @Body() body: PayOrderDto,
     @Req() req: { user: User },
-  ): Promise<ApiResponseDto<{ paidOrder: Order; tickets: Ticket[] }>> {
-    const order = await this.ordersService.findOne(id, req.user.id);
-    if (!order) {
-      throw new NotFoundException('订单不存在');
-    }
-    const res = await this.ordersService.payOrder(id, body, req.user.id);
-    return new ApiResponseDto('支付成功', res);
+  ): Promise<ApiResponseDto<PayParamsDto>> {
+    const params = await this.ordersService.createPayment(
+      orderId,
+      body,
+      req.user.id,
+    );
+    return new ApiResponseDto('创建支付请求成功', params);
   }
 }
