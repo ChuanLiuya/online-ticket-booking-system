@@ -111,7 +111,7 @@ export class TicketsService {
       order: { createdAt: 'DESC' },
       take: limit,
       skip: offset,
-      relations: ['event', 'event.organizer'],
+      relations: ['event', 'event.organizer', 'order'],
     });
   }
   async findOne(id: string): Promise<Ticket | null> {
