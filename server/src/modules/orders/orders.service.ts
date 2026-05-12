@@ -11,6 +11,8 @@ import { Event } from '../events/entities/event.entity';
 import { OrderStatus } from './types/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
+import { TicketsService } from '../tickets/tickets.service';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Injectable()
 export class OrdersService {
@@ -19,6 +21,7 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
+    private ticketsService: TicketsService,
   ) {}
 
   private generateOrderNo(): string {
@@ -153,12 +156,25 @@ export class OrdersService {
       where: { user: { id: userId } },
     });
   }
-
-  async payOrder(id: string, body: PayOrderDto): Promise<Order> {
+  /**
+   * 支付订单
+   * @param id 订单ID
+   * @param body 支付订单，包含支付方式和交易ID（可选）
+   * @param userId 支付者ID
+   * @returns 支付后的订单和对应的门票
+   * @throws NotFoundException 订单不存在
+   * @throws ConflictException 订单已支付或状态不允许支付或您不是订单所有者
+   * @description 支付订单，更新订单状态为已支付并创建对应的门票
+   */
+  async payOrder(
+    id: string,
+    body: PayOrderDto,
+    userId: string,
+  ): Promise<{ paidOrder: Order; tickets: Ticket[] }> {
     const { paymentMethod, transactionId } = body;
     const order = await this.ordersRepository.findOne({
       where: { id },
-      relations: ['event'],
+      relations: ['event', 'user'],
     });
     if (!order) {
       throw new NotFoundException('订单不存在');
@@ -175,10 +191,25 @@ export class OrdersService {
       transactionId,
     };
     await this.ordersRepository.update(id, updateData);
-    const updatedOrder = await this.findOne(id);
+    const updatedOrder = await this.ordersRepository.findOne({
+      where: { id },
+      relations: ['event', 'user'],
+    });
     if (!updatedOrder) {
       throw new NotFoundException('订单不存在');
     }
-    return updatedOrder;
+    if (order.user.id !== userId) {
+      throw new ConflictException('您不是订单所有者');
+    }
+    const tickets: Ticket[] = [];
+    for (let i = 0; i < order.quantity; i++) {
+      tickets.push(
+        await this.ticketsService.create(
+          { eventId: order.event.id, orderId: id },
+          userId,
+        ),
+      );
+    }
+    return { paidOrder: updatedOrder, tickets };
   }
 }

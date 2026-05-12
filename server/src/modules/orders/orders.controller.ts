@@ -18,6 +18,8 @@ import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
 import { OrderStatus } from './types/order-status.enum';
+import { Order } from './entities/order.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Controller('orders')
 export class OrdersController {
@@ -76,12 +78,12 @@ export class OrdersController {
     @Param('id') id: string,
     @Body() body: PayOrderDto,
     @Req() req: { user: User },
-  ) {
+  ): Promise<ApiResponseDto<{ paidOrder: Order; tickets: Ticket[] }>> {
     const order = await this.ordersService.findOne(id, req.user.id);
     if (!order) {
       throw new NotFoundException('订单不存在');
     }
-    const paidOrder = await this.ordersService.payOrder(id, body);
-    return new ApiResponseDto('支付成功', paidOrder);
+    const res = await this.ordersService.payOrder(id, body, req.user.id);
+    return new ApiResponseDto('支付成功', res);
   }
 }

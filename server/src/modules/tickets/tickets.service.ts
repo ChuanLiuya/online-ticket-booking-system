@@ -32,7 +32,7 @@ export class TicketsService {
   }
   /**
    * 创建活动票
-   * @param data 创建票 DTO
+   * @param data 创建票 DTO，包含活动ID，订单ID
    * @param userId 当前用户ID
    * @returns 创建的活动票
    * @throws NotFoundException 活动或用户不存在
