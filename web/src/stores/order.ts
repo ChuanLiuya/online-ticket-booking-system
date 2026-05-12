@@ -1,7 +1,7 @@
 import { orderApi } from '@/apis/order'
 import { OrderStatus, type Order } from '@/types/order'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 export const useOrderStore = defineStore('order', () => {
   /**
@@ -12,20 +12,6 @@ export const useOrderStore = defineStore('order', () => {
    * 用户的订单列表
    */
   const orders = ref<Order[]>([])
-  /**
-   * 用户已参加活动总数
-   */
-  const eventTotal = ref(0)
-  /**
-   * 用户已参加活动列表
-   */
-  const joinedEvents = computed(() => {
-    return orders.value
-      .filter(
-        (order) => order.status === OrderStatus.PAID || order.status === OrderStatus.COMPLETED,
-      )
-      .map((order) => order.event)
-  })
   /**
    * 当前选中的订单，用于显示订单详情
    */
@@ -45,7 +31,6 @@ export const useOrderStore = defineStore('order', () => {
     console.log('加载用户的订单列表成功', res)
     orders.value = res.data.data.orders
     orderTotal.value = res.data.data.total
-    eventTotal.value = joinedEvents.value.length
   }
   /**
    * 取消订单
@@ -67,5 +52,5 @@ export const useOrderStore = defineStore('order', () => {
     })
     loadOrders()
   }
-  return { orderTotal, eventTotal, orders, joinedEvents, selectedOrder, setSelectedOrder, loadOrders, cancelOrder, payOrder }
+  return { orderTotal, orders, selectedOrder, setSelectedOrder, loadOrders, cancelOrder, payOrder }
 })

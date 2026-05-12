@@ -3,10 +3,10 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { formatDate, formatDuration, formatPrice } from '@/utils/format'
 import { EventStatus, EventStatusLabel, EventStatusColor } from '@/types/event'
-import { useOrderStore } from '@/stores/order'
+import { useTicketStore } from '@/stores/ticket'
 
 const router = useRouter()
-const orderStore = useOrderStore()
+const ticketStore = useTicketStore()
 const loading = ref(false)
 
 const filterStatus = (value: EventStatus, row: { status: EventStatus }) => {
@@ -14,15 +14,15 @@ const filterStatus = (value: EventStatus, row: { status: EventStatus }) => {
 }
 
 onMounted(() => {
-  orderStore.loadOrders()
+  ticketStore.loadTickets()
 })
 </script>
 
 <template>
   <div class="container">
     <el-table
-      v-if="orderStore.eventTotal > 0"
-      :data="orderStore.joinedEvents"
+      v-if="ticketStore.ticketTotal > 0"
+      :data="ticketStore.myTickets"
       stripe
       style="width: 100%"
       :loading="loading"

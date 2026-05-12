@@ -29,9 +29,9 @@ const router = createRouter({
               component: () => import('../view/layout/profile/MyEventsView.vue'),
             },
             {
-              path: '/profile/joined-events',
-              name: 'joined-events',
-              component: () => import('../view/layout/profile/JoinedEventsView.vue'),
+              path: '/profile/my-tickets',
+              name: 'my-tickets',
+              component: () => import('../view/layout/profile/MyTicketsView.vue'),
             },
             {
               path: '/profile/orders',
