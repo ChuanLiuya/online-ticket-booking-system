@@ -44,7 +44,8 @@ export class EventsController {
   @UseGuards(JwtAuthGuard)
   async findMyEvents(@Req() req: { user: User }) {
     const events = await this.eventsService.findByOrganizer(req.user.id);
-    return new ApiResponseDto('获取我的活动成功', events);
+    const total = await this.eventsService.countByOrganizer(req.user.id);
+    return new ApiResponseDto('获取我的活动成功', { total, events });
   }
 
   @Get(':id')

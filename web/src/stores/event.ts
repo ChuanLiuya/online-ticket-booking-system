@@ -12,8 +12,9 @@ export const useEventStore = defineStore('event', () => {
     loading.value = true
     try {
       const res = await eventApi.findMyEvents()
-      events.value = res.data.data
-      total.value = res.data.data.length
+      console.log('获取用户的活动列表成功', res)
+      events.value = res.data.data.events
+      total.value = res.data.data.total
     } finally {
       loading.value = false
     }

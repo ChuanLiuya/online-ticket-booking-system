@@ -108,4 +108,17 @@ export class EventsService {
       relations: ['organizer'],
     });
   }
+
+  /**
+   * 统计用户组织的活动数量
+   * @param organizerId 用户ID
+   * @returns 活动数量
+   */
+  async countByOrganizer(organizerId: string): Promise<number> {
+    return this.eventsRepository.count({
+      where: {
+        organizer: { id: organizerId },
+      },
+    });
+  }
 }
