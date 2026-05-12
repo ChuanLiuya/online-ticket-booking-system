@@ -4,10 +4,21 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 export const useOrderStore = defineStore('order', () => {
+  /**
+   * 用户的订单总数
+   */
   const orderTotal = ref(0)
-  const eventTotal = ref(0)
+  /**
+   * 用户的订单列表
+   */
   const orders = ref<Order[]>([])
-  const selectedOrder = ref<Order | null>(null)
+  /**
+   * 用户已参加活动总数
+   */
+  const eventTotal = ref(0)
+  /**
+   * 用户已参加活动列表
+   */
   const joinedEvents = computed(() => {
     return orders.value
       .filter(
@@ -15,6 +26,14 @@ export const useOrderStore = defineStore('order', () => {
       )
       .map((order) => order.event)
   })
+  /**
+   * 当前选中的订单，用于显示订单详情
+   */
+  const selectedOrder = ref<Order | null>(null)
+  /**
+   * 设置当前选中的订单
+   * @param order 订单
+   */
   function setSelectedOrder(order: Order | null) {
     selectedOrder.value = order
   }
