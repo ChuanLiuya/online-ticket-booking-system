@@ -10,6 +10,7 @@ import { User } from '../users/entities/user.entity';
 import { Event } from '../events/entities/event.entity';
 import { OrderStatus } from './types/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { PayOrderDto } from './dto/pay-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -151,5 +152,33 @@ export class OrdersService {
     return this.ordersRepository.count({
       where: { user: { id: userId } },
     });
+  }
+
+  async payOrder(id: string, body: PayOrderDto): Promise<Order> {
+    const { paymentMethod, transactionId } = body;
+    const order = await this.ordersRepository.findOne({
+      where: { id },
+      relations: ['event'],
+    });
+    if (!order) {
+      throw new NotFoundException('订单不存在');
+    }
+    if (order.status === OrderStatus.PAID) {
+      throw new ConflictException('订单已支付，无需重复支付');
+    }
+    if (order.status !== OrderStatus.PENDING) {
+      throw new ConflictException('订单状态不允许支付');
+    }
+    const updateData: Record<string, unknown> = {
+      status: OrderStatus.PAID,
+      paymentMethod,
+      transactionId,
+    };
+    await this.ordersRepository.update(id, updateData);
+    const updatedOrder = await this.findOne(id);
+    if (!updatedOrder) {
+      throw new NotFoundException('订单不存在');
+    }
+    return updatedOrder;
   }
 }

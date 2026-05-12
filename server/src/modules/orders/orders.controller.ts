@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from '../users/entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { PayOrderDto } from './dto/pay-order.dto';
 import { OrderStatus } from './types/order-status.enum';
 
 @Controller('orders')
@@ -67,5 +68,20 @@ export class OrdersController {
       body.transactionId,
     );
     return new ApiResponseDto('更新订单状态成功', order);
+  }
+
+  @Patch(':id/pay')
+  @UseGuards(JwtAuthGuard)
+  async payOrder(
+    @Param('id') id: string,
+    @Body() body: PayOrderDto,
+    @Req() req: { user: User },
+  ) {
+    const order = await this.ordersService.findOne(id, req.user.id);
+    if (!order) {
+      throw new NotFoundException('订单不存在');
+    }
+    const paidOrder = await this.ordersService.payOrder(id, body);
+    return new ApiResponseDto('支付成功', paidOrder);
   }
 }
