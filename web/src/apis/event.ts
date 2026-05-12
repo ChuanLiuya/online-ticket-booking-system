@@ -19,8 +19,8 @@ export const eventApi = {
   countHot: async (): Promise<AxiosResponse<Response<number>>> => {
     return await request.get('/events/hot/count')
   },
-  findMyEvents: async (): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
-    return await request.get('/events/my')
+  findMyEvents: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
+    return await request.get('/events/my', { params: { limit, page } })
   },
   update: async (id: string, data: updateEventReqBody): Promise<AxiosResponse<Response<Event>>> => {
     return await request.patch(`/events/${id}`, data)

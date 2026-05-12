@@ -8,10 +8,15 @@ export const useEventStore = defineStore('event', () => {
   const total = ref(0)
   const loading = ref(false)
 
-  async function loadMyEvents() {
+  /**
+   * 加载用户组织的活动列表
+   * @param limit 每页数量
+   * @param page 当前页码
+   */
+  async function loadMyEvents(limit: number = 20, page: number = 1) {
     loading.value = true
     try {
-      const res = await eventApi.findMyEvents()
+      const res = await eventApi.findMyEvents(limit, page)
       console.log('获取用户的活动列表成功', res)
       events.value = res.data.data.events
       total.value = res.data.data.total

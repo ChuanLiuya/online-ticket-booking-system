@@ -97,7 +97,12 @@ export class EventsService {
     return this.eventsRepository.save(event);
   }
 
-  async findByOrganizer(organizerId: string): Promise<Event[]> {
+  async findByOrganizer(
+    organizerId: string,
+    limit: number = 20,
+    page: number = 1,
+  ): Promise<Event[]> {
+    const offset = (page - 1) * limit;
     return this.eventsRepository.find({
       where: {
         organizer: { id: organizerId },
@@ -105,6 +110,8 @@ export class EventsService {
       order: {
         startTime: 'DESC',
       },
+      take: limit,
+      skip: offset,
       relations: ['organizer'],
     });
   }
