@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   Param,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -13,6 +14,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from './entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { EventsService } from '../events/events.service';
+import { GetEventsByOrganizerDto } from '../events/dto/get-events-by-organizer.dto';
+import { Event } from '../events/entities/event.entity';
 
 @Controller('users')
 export class UsersController {
@@ -35,8 +38,19 @@ export class UsersController {
   }
 
   @Get(':userId/events')
-  async getUserEvents(@Param('userId') userId: string) {
-    const events = await this.eventsService.getEventsByOrganizer(userId);
-    return new ApiResponseDto('获取指定用户举办的活动成功', events);
+  async getUserEvents(
+    @Param('userId') userId: string,
+    @Query() getEventsByOrganizerDto: GetEventsByOrganizerDto,
+  ): Promise<ApiResponseDto<{ events: Event[]; total: number }>> {
+    const events = await this.eventsService.getEventsByOrganizer(
+      userId,
+      getEventsByOrganizerDto.limit,
+      getEventsByOrganizerDto.page,
+    );
+    const total = await this.eventsService.countByOrganizer(userId);
+    return new ApiResponseDto('获取指定用户举办的活动成功', {
+      events,
+      total,
+    });
   }
 }
