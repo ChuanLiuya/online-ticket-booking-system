@@ -16,7 +16,9 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from '../users/entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { PayOrderDto } from './dto/pay-order.dto';
 import { OrderStatus } from './types/order-status.enum';
+import { PayParamsDto } from './dto/pay-params.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -67,5 +69,20 @@ export class OrdersController {
       body.transactionId,
     );
     return new ApiResponseDto('更新订单状态成功', order);
+  }
+
+  @Patch(':id/payment')
+  @UseGuards(JwtAuthGuard)
+  async createPayment(
+    @Param('id') orderId: string,
+    @Body() body: PayOrderDto,
+    @Req() req: { user: User },
+  ): Promise<ApiResponseDto<PayParamsDto>> {
+    const params = await this.ordersService.createPayment(
+      orderId,
+      body,
+      req.user.id,
+    );
+    return new ApiResponseDto('创建支付请求成功', params);
   }
 }

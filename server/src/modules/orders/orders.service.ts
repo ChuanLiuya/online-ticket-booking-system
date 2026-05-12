@@ -10,6 +10,9 @@ import { User } from '../users/entities/user.entity';
 import { Event } from '../events/entities/event.entity';
 import { OrderStatus } from './types/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { PayOrderDto } from './dto/pay-order.dto';
+import { TicketsService } from '../tickets/tickets.service';
+import { PayParamsDto } from './dto/pay-params.dto';
 
 @Injectable()
 export class OrdersService {
@@ -18,6 +21,7 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
+    private ticketsService: TicketsService,
   ) {}
 
   private generateOrderNo(): string {
@@ -93,7 +97,7 @@ export class OrdersService {
 
     return this.ordersRepository.findOne({
       where: query,
-      relations: ['event', 'user'],
+      relations: ['event', 'event.organizer', 'user'],
     });
   }
 
@@ -151,5 +155,80 @@ export class OrdersService {
     return this.ordersRepository.count({
       where: { user: { id: userId } },
     });
+  }
+  /**
+   * 生成模拟交易码
+   * @returns 模拟交易码
+   */
+  private generateMockTransactionId(): string {
+    const timestamp = Date.now().toString().slice(-10);
+    const random = Math.random().toString(36).slice(-8).toUpperCase();
+    return `MOCK${timestamp}${random}`;
+  }
+
+  private async waitPaymentFinish(
+    orderId: string,
+    paymentMethod: string,
+    userId: string,
+  ): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const mockTransactionId = this.generateMockTransactionId();
+    await this.ordersRepository.update(orderId, {
+      status: OrderStatus.PAID,
+      paymentMethod,
+      transactionId: mockTransactionId,
+      paidAt: new Date(),
+    });
+
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: ['event', 'user'],
+    });
+
+    if (!order) {
+      console.error('订单不存在:', orderId);
+      return;
+    }
+
+    for (let i = 0; i < order.quantity; i++) {
+      await this.ticketsService.create(
+        { eventId: order.event.id, orderId },
+        userId,
+      );
+    }
+
+    console.log(`订单 ${orderId} 模拟支付成功，已出票`);
+  }
+
+  async createPayment(
+    orderId: string,
+    body: PayOrderDto,
+    userId: string,
+  ): Promise<PayParamsDto> {
+    const { paymentMethod } = body;
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: ['event', 'user'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('订单不存在');
+    }
+
+    if (order.user.id !== userId) {
+      throw new ConflictException('您不是订单所有者');
+    }
+
+    if (order.status === OrderStatus.PAID) {
+      throw new ConflictException('订单已支付，无需重复支付');
+    }
+    if (order.status !== OrderStatus.PENDING) {
+      throw new ConflictException('订单状态不允许支付');
+    }
+
+    void this.waitPaymentFinish(orderId, paymentMethod, userId);
+
+    return { message: '这是模拟交易的二维码' };
   }
 }

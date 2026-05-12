@@ -7,7 +7,7 @@ import {
   MoreThanOrEqual,
   Not,
   LessThan,
-  And,
+  In,
 } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { EventStatus } from './types/event-status.enum';
@@ -36,7 +36,7 @@ export class EventStatusSchedulerService {
       {
         startTime: LessThanOrEqual(now),
         endTime: MoreThanOrEqual(now),
-        status: And(Not(EventStatus.ONGOING), Not(EventStatus.CANCELLED)),
+        status: Not(In([EventStatus.ONGOING, EventStatus.CANCELLED])),
       },
       {
         status: EventStatus.ONGOING,
@@ -52,7 +52,7 @@ export class EventStatusSchedulerService {
     const result = await this.eventRepository.update(
       {
         endTime: LessThan(now),
-        status: And(Not(EventStatus.COMPLETED), Not(EventStatus.CANCELLED)),
+        status: Not(In([EventStatus.COMPLETED, EventStatus.CANCELLED])),
       },
       {
         status: EventStatus.COMPLETED,

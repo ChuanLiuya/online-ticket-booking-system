@@ -54,3 +54,11 @@ export const OrderStatusColor: Record<OrderStatus, TagType> = {
   [OrderStatus.REFUNDED]: 'info',
   [OrderStatus.COMPLETED]: 'primary',
 };
+
+export interface CreatePaymentReqBody {
+  paymentMethod: string;
+}
+
+export interface PayParams {
+  message: string;
+}

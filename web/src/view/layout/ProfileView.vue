@@ -24,7 +24,7 @@ watch(
     <div class="title" id="title">个人中心</div>
     <el-tabs v-model="activeTab" class="profile-tabs" id="profile-tabs">
       <el-tab-pane label="我的活动" name="/profile/my-events" />
-      <el-tab-pane label="已参加活动" name="/profile/joined-events" />
+      <el-tab-pane label="我的票券" name="/profile/my-tickets" />
       <el-tab-pane label="我的订单" name="/profile/orders" />
       <el-tab-pane label="个人设置" name="/profile/settings" />
     </el-tabs>

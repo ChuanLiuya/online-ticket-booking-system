@@ -1,71 +1,111 @@
 import { orderApi } from '@/apis/order'
 import { OrderStatus, type Order } from '@/types/order'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 export const useOrderStore = defineStore('order', () => {
-  /**
-   * 用户的订单总数
-   */
   const orderTotal = ref(0)
-  /**
-   * 用户的订单列表
-   */
   const orders = ref<Order[]>([])
   /**
-   * 用户已参加活动总数
-   */
-  const eventTotal = ref(0)
-  /**
-   * 用户已参加活动列表
-   */
-  const joinedEvents = computed(() => {
-    return orders.value
-      .filter(
-        (order) => order.status === OrderStatus.PAID || order.status === OrderStatus.COMPLETED,
-      )
-      .map((order) => order.event)
-  })
-  /**
-   * 当前选中的订单，用于显示订单详情
+   * 选中的订单，用于支付操作，查看订单详情
    */
   const selectedOrder = ref<Order | null>(null)
   /**
-   * 设置当前选中的订单
-   * @param order 订单
+   * 订单支付是否在轮询状态
    */
-  function setSelectedOrder(order: Order | null) {
-    selectedOrder.value = order
-  }
+  const isCheckingPaymentStatus = ref(false)
   /**
-   * 加载用户订单列表
+   * 订单支付状态轮询定时器
+   */
+  let checkPaymentStatusInterval: ReturnType<typeof setInterval> | null = null
+
+  /**
+   * 加载用户的订单列表
    */
   async function loadOrders() {
     const res = await orderApi.getMyOrders()
-    console.log('加载用户的订单列表成功', res)
     orders.value = res.data.data.orders
     orderTotal.value = res.data.data.total
-    eventTotal.value = joinedEvents.value.length
+  }
+
+
+  /**
+   * 订单支付状态轮询
+   */
+  async function startCheckPaymentStatus(orderId: string) {
+    console.log('开始轮询订单状态', orderId)
+    await stopCheckPaymentStatus()
+    isCheckingPaymentStatus.value = true
+
+    checkPaymentStatusInterval = setInterval(async () => {
+      try {
+        console.log('轮询订单状态', orderId)
+        const res = await orderApi.getOrderById(orderId)
+        const updatedOrder = res.data.data
+        if (
+          updatedOrder.status === OrderStatus.PAID ||
+          updatedOrder.status === OrderStatus.CANCELLED
+        ) {
+          selectedOrder.value = updatedOrder
+          await stopCheckPaymentStatus()
+        }
+      } catch (error) {
+        console.error('轮询订单状态失败:', error)
+        await stopCheckPaymentStatus()
+      }
+    }, 1000)
   }
   /**
-   * 取消订单
-   * @param order 订单
+   * 停止轮询订单状态
    */
+  async function stopCheckPaymentStatus() {
+    if (checkPaymentStatusInterval) {
+      clearInterval(checkPaymentStatusInterval)
+      checkPaymentStatusInterval = null
+    }
+    isCheckingPaymentStatus.value = false
+    await loadOrders()
+    console.log('轮询订单状态已停止')
+  }
+  /**
+   * 设置选中的订单
+   */
+   async function setSelectedOrder(orderId: string | null) {
+    if (orderId){
+      const res = await orderApi.getOrderById(orderId)
+      console.log('加载订单详情成功', res)
+      selectedOrder.value = res.data.data
+    }
+  }
+
   async function cancelOrder(order: Order) {
     await orderApi.updateStatus(order.id, {
       status: OrderStatus.CANCELLED,
     })
-    loadOrders()
+    await loadOrders()
   }
-  /**
-   * 支付订单
-   * @param order 订单
-   */
-  async function payOrder(order: Order) {
-    await orderApi.updateStatus(order.id, {
-      status: OrderStatus.PAID,
-    })
-    loadOrders()
+
+  async function createPayment(orderId: string) {
+    try {
+      const res = await orderApi.createPayment(orderId, {
+        paymentMethod: 'mock',
+      })
+      console.log('创建支付请求成功', res.data.data.message)
+      startCheckPaymentStatus(orderId)
+    } catch (error) {
+      console.error('创建支付请求失败:', error)
+      throw error
+    }
   }
-  return { orderTotal, eventTotal, orders, joinedEvents, selectedOrder, setSelectedOrder, loadOrders, cancelOrder, payOrder }
+
+  return {
+    orderTotal,
+    orders,
+    selectedOrder,
+    isCheckingPaymentStatus,
+    setSelectedOrder,
+    loadOrders,
+    cancelOrder,
+    createPayment,
+  }
 })
