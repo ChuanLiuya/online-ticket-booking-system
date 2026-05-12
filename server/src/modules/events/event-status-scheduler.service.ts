@@ -21,7 +21,7 @@ export class EventStatusSchedulerService {
     private eventRepository: Repository<Event>,
   ) {}
   // 每分钟更新一次事件状态
-  @Cron(CronExpression.EVERY_SECOND)
+  @Cron(CronExpression.EVERY_MINUTE)
   async updateEventStatuses() {
     const now = new Date();
 
