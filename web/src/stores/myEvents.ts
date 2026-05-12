@@ -25,17 +25,13 @@ export const useMyEventsStore = defineStore('myEvents', () => {
     }
   }
 
-  async function findEvent(id: string) {
-    const res = await eventApi.findOne(id)
-    return res.data.data
-  }
   /**
    * 更新活动信息
    * @param eventId 活动ID
    * @param updatedEvent 提交的更新信息
    * @returns 更新后的活动信息
    */
-  async function updateEvent(eventId: string, updatedEvent: updateEventReqBody) {
+  async function updateMyEventById(eventId: string, updatedEvent: updateEventReqBody) {
     const res = await eventApi.update(eventId, updatedEvent)
     return res.data.data
   }
@@ -45,7 +41,6 @@ export const useMyEventsStore = defineStore('myEvents', () => {
     total,
     isLoadingMyEvents,
     loadMyEvents,
-    findEvent,
-    updateEvent,
+    updateMyEventById,
   }
 })

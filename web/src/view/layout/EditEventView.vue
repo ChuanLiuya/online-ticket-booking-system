@@ -4,12 +4,13 @@ import { useRoute } from 'vue-router'
 import { ElMessage, ElLoading, type FormRules, type FormInstance } from 'element-plus'
 import { EventStatus, type updateEventReqBody } from '@/types/event'
 import { AppError } from '@/utils/errors'
-import { useEventStore } from '@/stores/myEvents'
+import { useMyEventsStore } from '@/stores/myEvents'
 import router from '@/router'
+import { useEventActions } from '@/composables/useEventActions'
 
+const eventActions = useEventActions()
 const route = useRoute()
-
-const eventStore = useEventStore()
+const myEventsStore = useMyEventsStore()
 const eventId = route.params.id as string
 const formRef = ref<FormInstance>()
 const form = reactive<updateEventReqBody>({
@@ -84,7 +85,7 @@ async function loadEvent () {
   })
 
   try {
-    const event = await eventStore.findEvent(eventId)
+    const event = await eventActions.findEventById(eventId)
     form.title = event.title
     form.description = event.description
     form.location = event.location
@@ -126,7 +127,7 @@ async function handleSubmitButtonClick () {
   })
 
   try {
-    await eventStore.updateEvent(eventId, form)
+    await myEventsStore.updateMyEventById(eventId, form)
     ElMessage.success('活动修改成功！')
     router.push('/profile/my-events')
   } catch (error) {
