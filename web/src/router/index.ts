@@ -59,7 +59,12 @@ const router = createRouter({
           path: '/events/:id',
           name: 'event-detail',
           component: () => import('../view/layout/EventDetailView.vue'),
-        }
+        },
+        {
+          path: '/payment/:orderId',
+          name: 'payment',
+          component: () => import('../view/layout/PaymentView.vue'),
+        },
       ],
     },
   ],

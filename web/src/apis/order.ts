@@ -12,7 +12,7 @@ export const orderApi = {
     return await request.get('/orders/my', { params: { limit, page } });
   },
 
-  getOrderDetail: async (id: string): Promise<AxiosResponse<Response<Order>>> => {
+  getOrderById: async (id: string): Promise<AxiosResponse<Response<Order>>> => {
     return await request.get(`/orders/${id}`);
   },
 

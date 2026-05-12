@@ -14,8 +14,8 @@ const router = useRouter()
 const loading = ref(false)
 
 const dialogVisible = ref(false)
-const handleViewDetail = (order: Order) => {
-  orderStore.setSelectedOrder(order)
+const handleViewDetail = async (orderId: string) => {
+  await orderStore.setSelectedOrder(orderId)
   dialogVisible.value = true
 }
 
@@ -55,18 +55,8 @@ const handleCancelOrder = async (order: Order) => {
     }
   }
 }
-const handleCreatePaymentClick = async (order: Order) => {
-  try {
-    await orderStore.createPayment(order.id)
-    ElMessage.success('创建支付请求成功')
-    loadOrders()
-  } catch (error) {
-    if (error instanceof AppError) {
-      ElMessage.error(error.message)
-    } else {
-      ElMessage.error('创建支付请求失败')
-    }
-  }
+const handleCreatePaymentClick = (order: Order) => {
+  router.push(`/payment/${order.id}`)
 }
 // const searchText = ref('')
 onMounted(() => {
@@ -142,7 +132,7 @@ const filterStatus = (value: OrderStatus, row: Order) => {
         </template> -->
         <template #default="scope">
           <div class="action-buttons">
-            <el-button size="small" @click="handleViewDetail(scope.row)">查看详情</el-button>
+            <el-button size="small" @click="handleViewDetail(scope.row.id)">查看详情</el-button>
             <el-button
               v-if="scope.row.status === OrderStatus.PENDING"
               size="small"
