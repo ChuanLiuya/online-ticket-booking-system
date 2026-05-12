@@ -13,7 +13,6 @@ const currentPage = ref(1)
 const pageSize = ref(20)
 const router = useRouter()
 const myEventsStore = useMyEventsStore()
-const loading = ref(false)
 const dialogVisible = ref(false)
 const selectedEvent = ref<Event | null>(null)
 
@@ -31,7 +30,6 @@ const handleEditButtonClick = (event: Event) => {
 }
 
 async function loadEvents() {
-  loading.value = true
   try {
     await myEventsStore.loadMyEvents(pageSize.value, currentPage.value)
   } catch (error) {
@@ -40,8 +38,6 @@ async function loadEvents() {
     } else {
       ElMessage.error('获取活动列表失败')
     }
-  } finally {
-    loading.value = false
   }
 }
 
@@ -50,14 +46,14 @@ const handleCurrentChange = (val: number) => {
   loadEvents()
 }
 
-onMounted(() => {
+onMounted(async () => {
   loadEvents()
 })
 </script>
 
 <template>
   <div class="container">
-    <el-table v-if="myEventsStore.total > 0" :data="myEventsStore.events" stripe :loading="loading" fit>
+    <el-table v-if="myEventsStore.total > 0" :data="myEventsStore.myEvents" stripe :loading="myEventsStore.isLoadingMyEvents" fit>
       <el-table-column show-overflow-tooltip label="活动名称" min-width="200">
         <template #default="scope">
           <span class="event-link" @click="router.push(`/events/${scope.row.id}`)">

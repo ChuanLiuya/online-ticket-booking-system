@@ -4,9 +4,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useMyEventsStore = defineStore('myEvents', () => {
-  const events = ref<Event[]>([])
+  const myEvents = ref<Event[]>([])
   const total = ref(0)
-  const loading = ref(false)
+  const isLoadingMyEvents = ref(false)
 
   /**
    * 加载用户组织的活动列表
@@ -14,14 +14,14 @@ export const useMyEventsStore = defineStore('myEvents', () => {
    * @param page 当前页码
    */
   async function loadMyEvents(limit: number = 20, page: number = 1) {
-    loading.value = true
+    isLoadingMyEvents.value = true
     try {
       const res = await eventApi.findMyEvents(limit, page)
       console.log('获取用户的活动列表成功', res)
-      events.value = res.data.data.events
+      myEvents.value = res.data.data.events
       total.value = res.data.data.total
     } finally {
-      loading.value = false
+      isLoadingMyEvents.value = false
     }
   }
 
@@ -41,9 +41,9 @@ export const useMyEventsStore = defineStore('myEvents', () => {
   }
 
   return {
-    events,
+    myEvents,
     total,
-    loading,
+    isLoadingMyEvents,
     loadMyEvents,
     findEvent,
     updateEvent,
