@@ -1,26 +1,18 @@
-import { orderApi } from '@/apis/order'
-import { OrderStatus, type Order } from '@/types/order'
+import { ticketApi } from '@/apis/ticket'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import { type Ticket } from '@/types/ticket'
 
 export const useTicketStore = defineStore('ticket', () => {
-  const tickets = ref<Order[]>([])
-  const ticketTotal = ref(0)
+  const tickets = ref<Ticket[]>([])
+  const total = ref(0)
 
-  const myTickets = computed(() => {
-    return tickets.value
-      .filter(
-        (order) => order.status === OrderStatus.PAID || order.status === OrderStatus.COMPLETED,
-      )
-      .map((order) => order.event)
-  })
-
-  async function loadTickets() {
-    const res = await orderApi.getMyOrders()
+  async function loadTickets(limit: number = 20, page: number = 1) {
+    const res = await ticketApi.getMyTickets(limit, page)
     console.log('加载用户的票券列表成功', res)
-    tickets.value = res.data.data.orders
-    ticketTotal.value = myTickets.value.length
+    tickets.value = res.data.data.tickets
+    total.value = res.data.data.total
   }
 
-  return { tickets, ticketTotal, myTickets, loadTickets }
+  return { tickets, total, loadTickets }
 })
