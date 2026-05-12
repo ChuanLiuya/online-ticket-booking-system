@@ -7,6 +7,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { EventStatus } from '../types/event-status.enum';
 
 export class CreateEventDto {
   @IsString()
@@ -44,4 +45,9 @@ export class CreateEventDto {
   @IsString()
   @IsOptional()
   image?: string;
+}
+
+export class UpdateEventDto extends CreateEventDto {
+  @IsOptional()
+  status?: EventStatus;
 }

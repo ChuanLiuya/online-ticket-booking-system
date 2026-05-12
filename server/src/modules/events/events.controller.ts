@@ -9,12 +9,13 @@ import {
   ParseIntPipe,
   Param,
   NotFoundException,
+  Patch,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from '../users/entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
-import { CreateEventDto } from './dto/create-event.dto';
+import { CreateEventDto, UpdateEventDto } from './dto/create-event.dto';
 
 @Controller('events')
 export class EventsController {
@@ -39,6 +40,22 @@ export class EventsController {
     return new ApiResponseDto('获取热点活动成功', events);
   }
 
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  async findMyEvents(
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+    @Req() req: { user: User },
+  ) {
+    const events = await this.eventsService.findByOrganizer(
+      req.user.id,
+      limit,
+      page,
+    );
+    const total = await this.eventsService.countByOrganizer(req.user.id);
+    return new ApiResponseDto('获取我的活动成功', { total, events });
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const event = await this.eventsService.findOne(id);
@@ -46,5 +63,22 @@ export class EventsController {
       throw new NotFoundException('活动不存在');
     }
     return new ApiResponseDto('获取活动详情成功', event);
+  }
+
+  @Get('hot/count')
+  async countHotEvents() {
+    const count = await this.eventsService.countHotEvents();
+    return new ApiResponseDto('获取热点活动总数成功', count);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateEventDto,
+    @Req() req: { user: User },
+  ) {
+    const event = await this.eventsService.update(id, data, req.user);
+    return new ApiResponseDto('更新活动成功', event);
   }
 }

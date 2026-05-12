@@ -2,7 +2,7 @@ import type { AxiosResponse } from 'axios'
 import request from '@/utils/request'
 import type { Response } from '@/types/respones'
 
-import type { createEventReqBody, Event } from '@/types/event'
+import type { createEventReqBody, Event, updateEventReqBody } from '@/types/event'
 
 
 
@@ -15,5 +15,14 @@ export const eventApi = {
   },
   findOne: async (id: string): Promise<AxiosResponse<Response<Event>>> => {
     return await request.get(`/events/${id}`)
+  },
+  countHot: async (): Promise<AxiosResponse<Response<number>>> => {
+    return await request.get('/events/hot/count')
+  },
+  findMyEvents: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
+    return await request.get('/events/my', { params: { limit, page } })
+  },
+  update: async (id: string, data: updateEventReqBody): Promise<AxiosResponse<Response<Event>>> => {
+    return await request.patch(`/events/${id}`, data)
   },
 }

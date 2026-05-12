@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { eventApi } from '@/apis/event'
+import { orderApi } from '@/apis/order'
 import { AppError } from '@/utils/errors'
 import { ElMessage, ElTag, ElButton } from 'element-plus'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { Event } from '@/types/event'
 import { Calendar, MapPin, Users, Clock, DollarSign, User, Image as ImageIcon } from '@lucide/vue'
 import { formatDate, formatPrice, formatDuration } from '@/utils/format'
+import { EventStatus } from '@/types/event'
 
 const route = useRoute()
+const router = useRouter()
 const id = route.params.id
 
 const event = ref<Event | null>(null)
+const loading = ref(false)
 
 onMounted(async () => {
   try {
@@ -29,15 +33,53 @@ onMounted(async () => {
 
 const getStatusTag = (status: string) => {
   switch (status) {
-    case 'active':
+    case 'upcoming':
+      return { text: '即将开始', type: 'warning' as const }
+    case 'ongoing':
       return { text: '进行中', type: 'success' as const }
-    case 'ended':
+    case 'completed':
       return { text: '已结束', type: 'info' as const }
-    case 'cancelled':
+    case 'canceled':
       return { text: '已取消', type: 'danger' as const }
     default:
       return { text: status, type: 'warning' as const }
   }
+}
+
+const handleSignUp = async () => {
+  if (!event.value) return
+  
+  const eventStatus = event.value.status
+  if (eventStatus === EventStatus.CANCELED || eventStatus === EventStatus.COMPLETED) {
+    ElMessage.warning('该活动无法报名')
+    return
+  }
+  
+  if (event.value.currentParticipants >= event.value.maxParticipants) {
+    ElMessage.warning('活动名额已满')
+    return
+  }
+  
+  loading.value = true
+  try {
+    await orderApi.create({ eventId: event.value.id, quantity: 1 })
+    ElMessage.success('报名成功！')
+    router.push('/profile/orders')
+  } catch (error) {
+    if (error instanceof AppError) {
+      ElMessage.error(error.message)
+    } else {
+      ElMessage.error('报名失败，请稍后重试')
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+const canSignUp = () => {
+  if (!event.value) return false
+  const status = event.value.status
+  return status === EventStatus.UPCOMING || status === EventStatus.ONGOING
 }
 </script>
 
@@ -111,8 +153,24 @@ const getStatusTag = (status: string) => {
         </div>
 
         <div class="event-actions">
-          <ElButton type="primary" class="action-btn" size="large">
+          <ElButton
+            v-if="canSignUp()"
+            type="primary"
+            class="action-btn"
+            size="large"
+            :loading="loading"
+            @click="handleSignUp"
+          >
             立即报名
+          </ElButton>
+          <ElButton
+            v-else
+            type="default"
+            class="action-btn"
+            size="large"
+            disabled
+          >
+            {{ event?.status === EventStatus.CANCELED ? '活动已取消' : event?.status === EventStatus.COMPLETED ? '活动已结束' : '名额已满' }}
           </ElButton>
         </div>
       </div>

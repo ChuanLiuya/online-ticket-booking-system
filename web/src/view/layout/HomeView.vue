@@ -7,7 +7,10 @@ import type { Event } from '@/types/event'
 import { formatDate, formatPrice, formatDuration } from '@/utils/format'
 import router from '@/router'
 
+const currentPage = ref(1)
+const pageSize = ref(10)
 const hotEvents = ref<Event[]>([])
+const total = ref(0)
 const hotEventsCut = computed(() => {
   const titleMaxLength = 20
   const descriptionMaxLength = 100
@@ -33,9 +36,10 @@ const hotEventsCut = computed(() => {
     }
   })
 })
-onMounted(async () => {
+
+async function findHotEvents() {
   try {
-    const res = await eventApi.findHot()
+    const res = await eventApi.findHot(pageSize.value, currentPage.value)
     hotEvents.value = res.data.data || []
     console.log(hotEvents.value)
   } catch (error) {
@@ -45,10 +49,36 @@ onMounted(async () => {
       ElMessage.error('遇到未知错误，请稍后重试')
     }
   }
-})
+}
+
+async function countHotEvents() {
+  try {
+    const res = await eventApi.countHot()
+    total.value = res.data.data || 0
+  } catch (error) {
+    if (error instanceof AppError) {
+      ElMessage.error(error.message)
+    } else {
+      ElMessage.error('遇到未知错误，请稍后重试')
+    }
+  }
+}
+
+
+const handleCurrentChange = () => {
+  findHotEvents()
+}
 const handleClick = (id: string) => {
   router.push({ name: 'event-detail', params: { id } })
 }
+onMounted(async () => {
+  await findHotEvents()
+  await countHotEvents()
+})
+
+
+
+
 </script>
 
 <template>
@@ -69,6 +99,17 @@ const handleClick = (id: string) => {
       </div>
     </div>
     <el-empty class="no-events" v-if="hotEventsCut.length === 0" description="暂无热点活动" />
+    <div class="pagination-container">
+      <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      background
+      layout="prev, pager, next, jumper"
+      :total="total"
+      @current-change="handleCurrentChange"
+      />
+    </div>
+
   </div>
 </template>
 
@@ -86,7 +127,13 @@ const handleClick = (id: string) => {
   font-size: 24px;
   font-weight: bold;
 }
-
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  text-align: center;
+}
 .event-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
