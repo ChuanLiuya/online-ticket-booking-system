@@ -128,4 +128,21 @@ export class EventsService {
       },
     });
   }
+
+  /**
+   * 获取指定用户举办的活动列表
+   * @param organizerId 用户ID
+   * @returns 活动列表
+   */
+  async getEventsByOrganizer(organizerId: string): Promise<Event[]> {
+    return this.eventsRepository.find({
+      where: {
+        organizer: { id: organizerId },
+      },
+      order: {
+        startTime: 'DESC',
+      },
+      relations: ['organizer'],
+    });
+  }
 }
