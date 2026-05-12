@@ -4,7 +4,7 @@ import type { LoginReqBody, User } from '@/types/user'
 import { authApi } from '@/apis/auth'
 import { userApi } from '@/apis/user'
 
-export const useUserStore = defineStore('user', () => {
+export const useAuthStore = defineStore('auth', () => {
   // 状态
   const user = ref<User | null>(null)
   const access_token = ref('')

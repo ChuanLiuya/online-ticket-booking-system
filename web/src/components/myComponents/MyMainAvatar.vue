@@ -1,14 +1,14 @@
 <template>
-  <el-popover placement="bottom" v-if="userStore.isLoggedIn">
+  <el-popover placement="bottom" v-if="authStore.isLoggedIn">
     <template #reference>
       <el-avatar class="avatar">{{
-        userStore?.user?.nickname?.[0] || userStore?.user?.username?.[0] || '用户'
+        authStore?.user?.nickname?.[0] || authStore?.user?.username?.[0] || '用户'
       }}</el-avatar>
     </template>
     <template #default>
       <div class="avatar-card">
         <div class="avatar-card-name">
-          {{ userStore?.user?.nickname || userStore?.user?.username }}
+          {{ authStore?.user?.nickname || authStore?.user?.username }}
         </div>
         <div class="avatar-card-button"><User :size="20" />个人中心</div>
         <div class="avatar-card-button"><Settings :size="20" />账号设置</div>
@@ -20,10 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 import { User, LogOut, Settings } from '@lucide/vue'
 
-const userStore = useUserStore()
+const authStore = useAuthStore()
 
 const emit = defineEmits(['login-click'])
 </script>
