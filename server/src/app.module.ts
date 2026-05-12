@@ -30,6 +30,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         database: configService.get('DB_DATABASE', 'default-database'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get('NODE_ENV') === 'development',
+        timezone: configService.get('DB_TIMEZONE', '+08:00'),
       }),
     }),
     UsersModule,
