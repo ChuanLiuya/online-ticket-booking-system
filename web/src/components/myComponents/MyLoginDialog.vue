@@ -2,9 +2,9 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { User, Lock } from '@lucide/vue'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 import { AppError } from '@/utils/errors'
-const userStore = useUserStore()
+const authStore = useAuthStore()
 const dialogState = defineModel<'login' | 'register' | 'disabled'>({ required: true })
 const dialogVisible = computed(() => dialogState.value === 'login')
 const formRef = ref<FormInstance>()
@@ -26,7 +26,7 @@ const clickLoginButton = async () => {
       return
     } else {
       try {
-        await userStore.login(form)
+        await authStore.login(form)
         ElMessage.success('登录成功')
         dialogState.value = 'disabled'
       } catch (error) {

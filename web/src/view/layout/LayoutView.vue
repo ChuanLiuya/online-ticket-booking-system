@@ -6,7 +6,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
 import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
 import MyMainAvatar from '@/components/myComponents/MyMainAvatar.vue'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 import { AppError } from '@/utils/errors'
 import { ElMessage } from 'element-plus'
 import { User } from '@lucide/vue'
@@ -20,8 +20,8 @@ const clickLoginButton = () => {
 
 onMounted(async () => {
   try {
-    await useUserStore().getMe()
-    ElMessage.success(`欢迎回来，${useUserStore().user?.nickname || useUserStore().user?.username || '用户'}！`)
+    await useAuthStore().getMe()
+    ElMessage.success(`欢迎回来，${useAuthStore().user?.nickname || useAuthStore().user?.username || '用户'}！`)
   } catch (error) {
     if (error instanceof AppError) {
       ElMessage.error(error.message)

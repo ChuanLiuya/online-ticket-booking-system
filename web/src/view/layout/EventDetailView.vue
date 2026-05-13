@@ -48,18 +48,18 @@ const getStatusTag = (status: string) => {
 
 const handleSignUp = async () => {
   if (!event.value) return
-  
+
   const eventStatus = event.value.status
   if (eventStatus === EventStatus.CANCELED || eventStatus === EventStatus.COMPLETED) {
     ElMessage.warning('该活动无法报名')
     return
   }
-  
+
   if (event.value.currentParticipants >= event.value.maxParticipants) {
     ElMessage.warning('活动名额已满')
     return
   }
-  
+
   loading.value = true
   try {
     await orderApi.create({ eventId: event.value.id, quantity: 1 })
@@ -95,12 +95,7 @@ const canSignUp = () => {
         </div>
 
         <div class="event-image-wrapper">
-          <el-image
-            :src="event.image"
-            fit="cover"
-            class="event-image"
-            lazy
-          >
+          <el-image :src="event.image" fit="cover" class="event-image" lazy>
             <template #error>
               <div class="image-placeholder">
                 <ImageIcon :size="48" class="placeholder-icon" />
@@ -118,37 +113,53 @@ const canSignUp = () => {
           <div class="info-row">
             <div class="info-icon-wrap"><Calendar :size="18" class="info-icon" /></div>
             <span class="info-label">开始时间</span>
-            <div class="info-value-wrap"><span class="info-value">{{ formatDate(event.startTime) }}</span></div>
+            <div class="info-value-wrap">
+              <span class="info-value">{{ formatDate(event.startTime) }}</span>
+            </div>
           </div>
 
           <div class="info-row">
             <div class="info-icon-wrap"><Clock :size="18" class="info-icon" /></div>
             <span class="info-label">活动时长</span>
-            <div class="info-value-wrap"><span class="info-value">{{ formatDuration(event.startTime, event.endTime) }}</span></div>
+            <div class="info-value-wrap">
+              <span class="info-value">{{ formatDuration(event.startTime, event.endTime) }}</span>
+            </div>
           </div>
 
           <div class="info-row">
             <div class="info-icon-wrap"><MapPin :size="18" class="info-icon" /></div>
             <span class="info-label">活动地点</span>
-            <div class="info-value-wrap"><span class="info-value">{{ event.location }}</span></div>
+            <div class="info-value-wrap">
+              <span class="info-value">{{ event.location }}</span>
+            </div>
           </div>
 
           <div class="info-row">
             <div class="info-icon-wrap"><DollarSign :size="18" class="info-icon" /></div>
             <span class="info-label">活动价格</span>
-            <div class="info-value-wrap"><span class="info-value highlight">{{ formatPrice(event.price) }}</span></div>
+            <div class="info-value-wrap">
+              <span class="info-value highlight">{{ formatPrice(event.price) }}</span>
+            </div>
           </div>
 
           <div class="info-row">
             <div class="info-icon-wrap"><User :size="18" class="info-icon" /></div>
             <span class="info-label">组织者</span>
-            <div class="info-value-wrap"><span class="info-value">{{ event.organizer?.nickname || event.organizer?.username || '未知' }}</span></div>
+            <div class="info-value-wrap">
+              <RouterLink :to="'/users/' + event.organizer?.id" class="info-value link">{{
+                event.organizer?.nickname || event.organizer?.username || '未知'
+              }}</RouterLink>
+            </div>
           </div>
 
           <div class="info-row">
             <div class="info-icon-wrap"><Users :size="18" class="info-icon" /></div>
             <span class="info-label">参与人数</span>
-            <div class="info-value-wrap"><span class="info-value">{{ event.currentParticipants || 0 }} / {{ event.maxParticipants }}</span></div>
+            <div class="info-value-wrap">
+              <span class="info-value"
+                >{{ event.currentParticipants || 0 }} / {{ event.maxParticipants }}</span
+              >
+            </div>
           </div>
         </div>
 
@@ -163,14 +174,14 @@ const canSignUp = () => {
           >
             立即报名
           </ElButton>
-          <ElButton
-            v-else
-            type="default"
-            class="action-btn"
-            size="large"
-            disabled
-          >
-            {{ event?.status === EventStatus.CANCELED ? '活动已取消' : event?.status === EventStatus.COMPLETED ? '活动已结束' : '名额已满' }}
+          <ElButton v-else type="default" class="action-btn" size="large" disabled>
+            {{
+              event?.status === EventStatus.CANCELED
+                ? '活动已取消'
+                : event?.status === EventStatus.COMPLETED
+                  ? '活动已结束'
+                  : '名额已满'
+            }}
           </ElButton>
         </div>
       </div>
@@ -337,10 +348,17 @@ const canSignUp = () => {
     height: 200px;
   }
 
-
-
   .event-actions {
     flex-direction: column;
   }
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: none;
+}
+.link:hover {
+  color: #409eff;
+  text-decoration: underline;
 }
 </style>

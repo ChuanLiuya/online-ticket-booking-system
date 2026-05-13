@@ -65,6 +65,27 @@ const router = createRouter({
           name: 'payment',
           component: () => import('../view/layout/PaymentView.vue'),
         },
+        {
+          path: '/users/:id',
+          name: 'users',
+          redirect: (to) => ({
+            name: 'user-events',
+            params: { id: to.params.id },
+          }),
+          component: () => import('../view/layout/UserDetailView.vue'),
+          children: [
+            {
+              path: '/users/:id/events',
+              name: 'user-events',
+              component: () => import('../view/layout/user-detail/UserEventsView.vue'),
+            },
+            {
+              path: '/users/:id/comments-from-others',
+              name: 'user-comments-from-others',
+              component: () => import('../view/layout/user-detail/UserCommentsFromOthersView.vue'),
+            },
+          ],
+        },
       ],
     },
   ],

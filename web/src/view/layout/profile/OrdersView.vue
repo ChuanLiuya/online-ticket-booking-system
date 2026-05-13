@@ -74,7 +74,7 @@ const filterStatus = (value: OrderStatus, row: Order) => {
       <el-table-column show-overflow-tooltip prop="orderNo" label="订单号" width="200" />
       <el-table-column show-overflow-tooltip label="活动名称" min-width="200">
         <template #default="scope">
-          <span class="event-link" @click="router.push(`/events/${scope.row.event.id}`)">
+          <span class="link" @click="router.push(`/events/${scope.row.event.id}`)">
             {{ scope.row.event.title }}
           </span>
         </template>
@@ -87,7 +87,9 @@ const filterStatus = (value: OrderStatus, row: Order) => {
       />
       <el-table-column show-overflow-tooltip label="发起人" width="120">
         <template #default="scope">
-          {{ scope.row.event.organizer.nickname || scope.row.event.organizer.username }}
+          <span class="link" @click="router.push(`/users/${scope.row.event.organizer.id}`)">
+            {{ scope.row.event.organizer.nickname || scope.row.event.organizer.username }}
+          </span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip prop="quantity" label="购买数量" width="100" />
@@ -167,10 +169,10 @@ const filterStatus = (value: OrderStatus, row: Order) => {
   gap: 8px;
   white-space: nowrap;
 }
-.event-link {
+.link {
   cursor: pointer;
 }
-.event-link:hover {
+.link:hover {
   color: #409eff;
   text-decoration: underline;
 }
