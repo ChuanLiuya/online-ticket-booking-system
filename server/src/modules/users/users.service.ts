@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -44,5 +48,14 @@ export class UsersService {
     if (existingUser) {
       throw new BadRequestException('用户名已存在');
     }
+  }
+  async getUserInfoById(userId: string): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+    return user;
   }
 }

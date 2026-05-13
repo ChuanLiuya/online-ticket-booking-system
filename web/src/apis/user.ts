@@ -13,4 +13,7 @@ export const userApi = {
   getEventsByOrganizerId: async (organizerId: string,{page = 1,limit = 20}: {page: number, limit: number}): Promise<AxiosResponse<Response<{total: number, events: Event[]}>>> => {
     return await request.get(`/users/${organizerId}/events`,{params: {page,limit}})
   },
+  getUserInfoById: async (userId: string): Promise<AxiosResponse<Response<User>>> => {
+    return await request.get(`/users/${userId}`)
+  }
 }

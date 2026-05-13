@@ -53,4 +53,12 @@ export class UsersController {
       total,
     });
   }
+
+  @Get(':userId')
+  async getUserInfoById(
+    @Param('userId') userId: string,
+  ): Promise<ApiResponseDto<User>> {
+    const user = await this.usersService.getUserInfoById(userId);
+    return new ApiResponseDto('获取指定用户信息成功', user);
+  }
 }
