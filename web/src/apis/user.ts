@@ -2,6 +2,7 @@ import type { RegisterReqBody, User } from '@/types/user'
 import request from '@/utils/request'
 import type { AxiosResponse } from 'axios'
 import type { Response } from '@/types/respones'
+import type { Event } from '@/types/event'
 
 export const userApi = {
   register: async (data: RegisterReqBody) => {

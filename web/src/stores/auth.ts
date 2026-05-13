@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
   // 状态
   const user = ref<User | null>(null)
   const access_token = ref('')
+  const isLoadingUserInfo = ref(false)
 
   // 计算属性
   const isLoggedIn = computed(() => user.value !== null && access_token.value !== '')
@@ -21,14 +22,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function getMe() {
+    isLoadingUserInfo.value = true
     const res = await userApi.getMe()
     user.value = res.data.data
     access_token.value = localStorage.getItem('access_token') || ''
     localStorage.setItem('user', JSON.stringify(res.data.data))
+    isLoadingUserInfo.value = false
   }
+
+
 
   return {
     user,
+    isLoadingUserInfo,
     access_token,
     isLoggedIn,
     login,

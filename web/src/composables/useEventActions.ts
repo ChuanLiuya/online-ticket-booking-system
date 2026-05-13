@@ -1,6 +1,6 @@
 import { eventApi } from '@/apis/event'
 import { userApi } from '@/apis/user'
-
+import type { Event } from '@/types/event'
 export function useEventActions() {
   async function findEventById(id: string) {
     const res = await eventApi.findOne(id)
