@@ -23,11 +23,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function getMe() {
     isLoadingUserInfo.value = true
-    const res = await userApi.getMe()
-    user.value = res.data.data
-    access_token.value = localStorage.getItem('access_token') || ''
-    localStorage.setItem('user', JSON.stringify(res.data.data))
-    isLoadingUserInfo.value = false
+    try {
+      const res = await userApi.getMe()
+      user.value = res.data.data
+      access_token.value = localStorage.getItem('access_token') || ''
+      localStorage.setItem('user', JSON.stringify(res.data.data))
+    } finally {
+      isLoadingUserInfo.value = false
+    }
+  }
+
+  function logout() {
+    user.value = null
+    access_token.value = ''
+    localStorage.removeItem('user')
+    localStorage.removeItem('access_token')
   }
 
 
@@ -39,5 +49,6 @@ export const useAuthStore = defineStore('auth', () => {
     isLoggedIn,
     login,
     getMe,
+    logout,
   }
 })

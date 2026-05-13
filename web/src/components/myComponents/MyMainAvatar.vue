@@ -10,9 +10,15 @@
         <div class="avatar-card-name">
           {{ authStore?.user?.nickname || authStore?.user?.username }}
         </div>
-        <div class="avatar-card-button"><User :size="20" />个人中心</div>
-        <div class="avatar-card-button"><Settings :size="20" />账号设置</div>
-        <div class="avatar-card-button"><LogOut :size="20" />退出登录</div>
+        <div class="avatar-card-button" @click="$router.push('/profile')">
+          <User :size="20" />个人中心
+        </div>
+        <div class="avatar-card-button" @click="$router.push('/profile/settings')">
+          <Settings :size="20" />账号设置
+        </div>
+        <div class="avatar-card-button" @click="handleLogoutButtonClick">
+          <LogOut :size="20" />退出登录
+        </div>
       </div>
     </template>
   </el-popover>
@@ -22,8 +28,21 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
 import { User, LogOut, Settings } from '@lucide/vue'
+import { ElMessageBox } from 'element-plus'
 
 const authStore = useAuthStore()
+
+function handleLogoutButtonClick() {
+  ElMessageBox.confirm('确定退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    authStore.logout()
+  }).catch(() => {
+    // 退出登录取消
+  })
+}
 
 const emit = defineEmits(['login-click'])
 </script>
@@ -40,7 +59,8 @@ const emit = defineEmits(['login-click'])
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   25% {
