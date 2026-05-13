@@ -28,3 +28,9 @@ export interface LoginRespBody {
   access_token: string
   user: User
 }
+
+export interface UpdateUserReqBody {
+  email?: string
+  phone?: string
+  nickname?: string
+}

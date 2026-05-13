@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -57,5 +58,29 @@ export class UsersService {
       throw new NotFoundException('用户不存在');
     }
     return user;
+  }
+
+  async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      await this.checkEmailAvailability(updateUserDto.email);
+      user.email = updateUserDto.email;
+    }
+
+    if (updateUserDto.nickname !== undefined) {
+      user.nickname = updateUserDto.nickname || '';
+    }
+
+    if (updateUserDto.phone !== undefined) {
+      user.phone = updateUserDto.phone || '';
+    }
+
+    return await this.usersRepository.save(user);
   }
 }

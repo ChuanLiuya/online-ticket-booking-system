@@ -3,6 +3,9 @@ import request from '@/utils/request'
 import type { AxiosResponse } from 'axios'
 import type { Response } from '@/types/respones'
 import type { Event } from '@/types/event'
+import type { UpdateUserReqBody } from '@/types/user'
+
+
 
 export const userApi = {
   register: async (data: RegisterReqBody) => {
@@ -16,5 +19,8 @@ export const userApi = {
   },
   getUserInfoById: async (userId: string): Promise<AxiosResponse<Response<User>>> => {
     return await request.get(`/users/${userId}`)
+  },
+  updateUser: async (data: UpdateUserReqBody): Promise<AxiosResponse<Response<User>>> => {
+    return await request.patch('/users/me', data)
   }
 }

@@ -7,9 +7,11 @@ import {
   Req,
   Param,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from './entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
@@ -35,6 +37,16 @@ export class UsersController {
   getCurrentUser(@Req() req: { user: User }): ApiResponseDto<User> {
     const user = req.user;
     return new ApiResponseDto('获取用户信息成功', user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateCurrentUser(
+    @Req() req: { user: User },
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<ApiResponseDto<User>> {
+    const user = await this.usersService.updateUser(req.user.id, updateUserDto);
+    return new ApiResponseDto('更新用户信息成功', user);
   }
 
   @Get(':userId/events')

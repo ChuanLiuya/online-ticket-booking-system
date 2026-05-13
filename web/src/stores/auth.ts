@@ -25,6 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoadingUserInfo.value = true
     try {
       const res = await userApi.getMe()
+      console.log('获取当前登录用户信息成功', res.data.data)
       user.value = res.data.data
       access_token.value = localStorage.getItem('access_token') || ''
       localStorage.setItem('user', JSON.stringify(res.data.data))
