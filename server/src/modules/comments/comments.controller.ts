@@ -15,9 +15,9 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from '../users/entities/user.entity';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { FindDirectCommentsDto } from './dto/find-direct-comments.dto';
 import { FindNestedRepliesDto } from './dto/find-nested-replies.dto';
 import { FindConversationDto } from './dto/find-conversation.dto';
+import { CommentTargetType } from './types/comment-target-type.enum';
 
 @Controller('comments')
 export class CommentsController {
@@ -37,14 +37,30 @@ export class CommentsController {
    * @returns 一级评论列表
    */
   @Get('direct')
-  async findDirectComments(@Query() dto: FindDirectCommentsDto) {
-    const { comments, total } =
-      await this.commentsService.findDirectComments(dto);
+  async findDirectComments(
+    @Query('targetId') targetId: string,
+    @Query('targetType') targetType: CommentTargetType,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    const comments = await this.commentsService.findDirectComments(
+      targetId,
+      targetType,
+      page,
+      limit,
+    );
+    const allTotal = await this.commentsService.getAllCommentCountByTarget(
+      targetId,
+      targetType,
+    );
+    const directTotal = await this.commentsService.getDirectCommentCount({
+      targetId,
+      targetType,
+    });
     return new ApiResponseDto('获取一级评论列表成功', {
       comments,
-      total,
-      page: dto.page || 1,
-      limit: dto.limit || 20,
+      allTotal,
+      directTotal,
     });
   }
 
@@ -58,11 +74,9 @@ export class CommentsController {
   async findNestedReplies(@Param() dto: FindNestedRepliesDto) {
     const { comments, total } =
       await this.commentsService.findNestedReplies(dto);
-    return new ApiResponseDto('获取嵌套回复列表成功', {
+    return new ApiResponseDto('获取二级评论列表成功', {
       comments,
       total,
-      page: dto.page,
-      limit: dto.limit,
     });
   }
 
@@ -79,8 +93,6 @@ export class CommentsController {
     return new ApiResponseDto('获取对话列表成功', {
       comments,
       total,
-      page: dto.page,
-      limit: dto.limit,
     });
   }
 

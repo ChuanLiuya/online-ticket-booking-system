@@ -21,6 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       httpStatus = exception.getStatus();
     } else {
       // 处理其他异常
+      console.error('全局异常:', exception);
       responseBody = new ApiResponseDto('系统内部错误');
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     }

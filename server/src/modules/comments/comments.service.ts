@@ -7,7 +7,6 @@ import { Repository, IsNull } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { FindDirectCommentsDto } from './dto/find-direct-comments.dto';
 import { FindNestedRepliesDto } from './dto/find-nested-replies.dto';
 import { FindConversationDto } from './dto/find-conversation.dto';
 import { User } from '../users/entities/user.entity';
@@ -65,11 +64,18 @@ export class CommentsService {
    * @returns 一级评论列表（按时间倒序）
    */
   async findDirectComments(
-    dto: FindDirectCommentsDto,
-  ): Promise<{ comments: Comment[]; total: number }> {
-    const { targetId, targetType, page = 1, limit = 20 } = dto;
-
-    const [comments, total] = await this.commentsRepository.findAndCount({
+    targetId: string,
+    targetType: CommentTargetType,
+    page = 1,
+    limit = 20,
+  ): Promise<Comment[]> {
+    if (!targetId) {
+      throw new NotFoundException('目标ID不能为空');
+    }
+    if (!Object.values(CommentTargetType).includes(targetType)) {
+      throw new ForbiddenException('无效的目标类型');
+    }
+    const comments = await this.commentsRepository.find({
       where: {
         targetId,
         targetType,
@@ -79,10 +85,10 @@ export class CommentsService {
       order: { createdAt: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
-      relations: ['user'],
+      relations: ['user'], // 加载评论者信息
     });
 
-    return { comments, total };
+    return comments;
   }
 
   /**
@@ -197,11 +203,28 @@ export class CommentsService {
     comment.isDeleted = true;
     await this.commentsRepository.save(comment);
   }
-
-  async getCommentCount(
+  async getAllCommentCountByTarget(
     targetId: string,
     targetType: CommentTargetType,
   ): Promise<number> {
+    if (!targetId) {
+      throw new NotFoundException('目标ID不能为空');
+    }
+    if (!Object.values(CommentTargetType).includes(targetType)) {
+      throw new ForbiddenException('无效的目标类型');
+    }
+    return this.commentsRepository.count({
+      where: { isDeleted: false, targetId, targetType },
+    });
+  }
+
+  async getDirectCommentCount({
+    targetId,
+    targetType,
+  }: {
+    targetId: string;
+    targetType: CommentTargetType;
+  }): Promise<number> {
     return this.commentsRepository.count({
       where: {
         targetId,

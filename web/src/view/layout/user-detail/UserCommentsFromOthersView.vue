@@ -1,36 +1,38 @@
 <template>
   <div class="container" id="container">
     <div class="title">收到的评论</div>
-
-
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCommentActions } from '@/composables/useCommentActions'
 import type { Comment } from '@/types/comment'
 import { AppError } from '@/utils/errors'
 import { ElMessage } from 'element-plus'
 const route = useRoute()
-const userId = route.params.userId as string
+const userId = computed(() => route.params.id as string)
+
 // 使用评论组合式函数
 const CommentsActions = useCommentActions()
 
-
 const comments = ref<Comment[]>([])
-const directCommentsTotal = ref<number>(0)
+// const directCommentsTotal = ref<number>(0)
 const currentPage = ref<number>(1)
 const limit = ref<number>(20)
 
-// 初始化
+
 onMounted(async () => {
   try {
-    const res = await CommentsActions.loadDirectComments(userId, 'user', currentPage.value, limit.value)
+    const res = await CommentsActions.loadDirectComments(
+      userId.value,
+      'user',
+      currentPage.value,
+      limit.value,
+    )
     comments.value = res.comments
-    directCommentsTotal.value = res.total
+    // directCommentsTotal.value = res.directTotal
   } catch (error) {
     if (error instanceof AppError) {
       ElMessage.error(error.message)
@@ -39,6 +41,8 @@ onMounted(async () => {
     }
   }
 })
+
+
 </script>
 
 <style scoped>
