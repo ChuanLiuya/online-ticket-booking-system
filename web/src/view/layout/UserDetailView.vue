@@ -43,7 +43,6 @@ onMounted(async () => {
     </div>
     <el-tabs v-model="activeTab" class="tabs" id="tabs">
       <el-tab-pane class="tab-link" label="个人活动" :name='`/users/${userId}/events`' />
-      <el-tab-pane class="tab-link" label="评论" :name='`/users/${userId}/comments-from-others`' />
     </el-tabs>
     <RouterView />
   </div>
