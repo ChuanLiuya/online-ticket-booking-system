@@ -20,6 +20,9 @@ export function useEventActions() {
     console.log('获取指定用户举办的活动成功',res)
     return res.data.data
   }
-
-  return { findEventById, findEventsByOrganizerId }
+  async function findAllEvents({page = 1,limit = 20}: {page: number, limit: number}): Promise<{total: number, events: Event[]}> {
+    const res = await eventApi.findAll({page,limit})
+    return res.data.data
+    }
+  return { findEventById, findEventsByOrganizerId, findAllEvents }
 }

@@ -71,6 +71,21 @@ export class EventsController {
     return new ApiResponseDto('获取热点活动总数成功', count);
   }
 
+  @Get()
+  async findAllEvents(
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+  ) {
+    const res = await this.eventsService.findAllEvents(limit, page);
+    return new ApiResponseDto('获取所有活动成功', res);
+  }
+
+  @Get('count')
+  async countAllEvents() {
+    const count = await this.eventsService.countAllEvents();
+    return new ApiResponseDto('获取所有活动总数成功', count);
+  }
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(

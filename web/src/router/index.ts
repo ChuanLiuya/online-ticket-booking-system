@@ -18,6 +18,11 @@ const router = createRouter({
           component: () => import('../view/layout/HomeView.vue'),
         },
         {
+          path: '/all-events',
+          name: 'all-events',
+          component: () => import('../view/layout/AllEventsView.vue'),
+        },
+        {
           path: '/profile',
           name: 'profile',
           redirect: '/profile/my-events',

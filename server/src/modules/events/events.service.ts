@@ -152,4 +152,25 @@ export class EventsService {
       relations: ['organizer'],
     });
   }
+
+  async findAllEvents(
+    limit: number = 20,
+    page: number = 1,
+  ): Promise<{ events: Event[]; total: number }> {
+    const offset = (page - 1) * limit;
+    const events = await this.eventsRepository.find({
+      order: {
+        startTime: 'DESC',
+      },
+      take: limit,
+      skip: offset,
+      relations: ['organizer'],
+    });
+    const total = await this.eventsRepository.count();
+    return { events, total };
+  }
+
+  async countAllEvents(): Promise<number> {
+    return this.eventsRepository.count();
+  }
 }

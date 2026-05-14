@@ -2,6 +2,7 @@
 import { House } from '@lucide/vue'
 import { X } from '@lucide/vue'
 import { Search } from '@lucide/vue'
+import { Calendar } from '@lucide/vue'
 import { onMounted, ref, type Ref } from 'vue'
 import MyRegisterDialog from '@/components/myComponents/MyRegisterDialog.vue'
 import MyLoginDialog from '@/components/myComponents/MyLoginDialog.vue'
@@ -56,6 +57,10 @@ onMounted(async () => {
           <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             <span>首页</span>
+          </el-menu-item>
+          <el-menu-item index="/all-events">
+            <el-icon><Calendar /></el-icon>
+            <span>所有活动</span>
           </el-menu-item>
           <el-sub-menu index="1">
             <template #title
