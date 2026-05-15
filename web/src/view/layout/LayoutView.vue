@@ -11,12 +11,19 @@ import { useAuthStore } from '@/stores/auth'
 import { AppError } from '@/utils/errors'
 import { ElMessage } from 'element-plus'
 import { User } from '@lucide/vue'
+import router from '@/router'
 
 const searchText = ref('')
 
 const dialogState: Ref<'login' | 'register' | 'disabled'> = ref('disabled')
 const clickLoginButton = () => {
   dialogState.value = 'login'
+}
+
+const handleSearch = () => {
+  if (searchText.value.trim()) {
+    router.push({ name: 'search-events', query: { keyword: searchText.value.trim() } })
+  }
 }
 
 onMounted(async () => {
@@ -44,7 +51,12 @@ onMounted(async () => {
           clearable
           :clear-icon="X"
           :prefix-icon="Search"
-        ></el-input>
+          @keyup.enter="handleSearch"
+        >
+          <template #append>
+            <el-button @click="handleSearch" type="primary" :icon="Search"></el-button>
+          </template>
+        </el-input>
       </div>
       <div class="login">
         <MyMainAvatar @login-click="clickLoginButton" />

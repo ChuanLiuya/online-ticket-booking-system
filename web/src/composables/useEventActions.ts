@@ -24,5 +24,9 @@ export function useEventActions() {
     const res = await eventApi.findAll({page,limit})
     return res.data.data
     }
-  return { findEventById, findEventsByOrganizerId, findAllEvents }
+  async function searchEvents(keyword: string, {page = 1,limit = 20}: {page: number, limit: number}): Promise<{total: number, events: Event[]}> {
+    const res = await eventApi.search(keyword, page, limit)
+    return res.data.data
+    }
+  return { findEventById, findEventsByOrganizerId, findAllEvents, searchEvents }
 }

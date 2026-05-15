@@ -31,4 +31,7 @@ export const eventApi = {
   update: async (id: string, data: updateEventReqBody): Promise<AxiosResponse<Response<Event>>> => {
     return await request.patch(`/events/${id}`, data)
   },
+  search: async (keyword: string, page: number = 1, limit: number = 20): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
+    return await request.get('/events/search', { params: { keyword, page, limit } })
+  },
 }

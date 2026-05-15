@@ -56,6 +56,16 @@ export class EventsController {
     return new ApiResponseDto('获取我的活动成功', { total, events });
   }
 
+  @Get('search')
+  async searchEvents(
+    @Query('keyword') keyword: string,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+  ) {
+    const res = await this.eventsService.searchEvents(keyword, limit, page);
+    return new ApiResponseDto('搜索活动成功', res);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const event = await this.eventsService.findOne(id);
