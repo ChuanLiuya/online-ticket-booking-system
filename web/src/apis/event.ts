@@ -19,10 +19,19 @@ export const eventApi = {
   countHot: async (): Promise<AxiosResponse<Response<number>>> => {
     return await request.get('/events/hot/count')
   },
+  findAll: async ({page = 1,limit = 20}: {page: number, limit: number}): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
+    return await request.get('/events', { params: { limit, page } })
+  },
+  countAll: async (): Promise<AxiosResponse<Response<number>>> => {
+    return await request.get('/events/count')
+  },
   findMyEvents: async (limit: number = 20, page: number = 1): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
     return await request.get('/events/my', { params: { limit, page } })
   },
   update: async (id: string, data: updateEventReqBody): Promise<AxiosResponse<Response<Event>>> => {
     return await request.patch(`/events/${id}`, data)
+  },
+  search: async (keyword: string, page: number = 1, limit: number = 20): Promise<AxiosResponse<Response<{ total: number, events: Event[] }>>> => {
+    return await request.get('/events/search', { params: { keyword, page, limit } })
   },
 }

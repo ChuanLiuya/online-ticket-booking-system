@@ -152,4 +152,47 @@ export class EventsService {
       relations: ['organizer'],
     });
   }
+
+  async findAllEvents(
+    limit: number = 20,
+    page: number = 1,
+  ): Promise<{ events: Event[]; total: number }> {
+    const offset = (page - 1) * limit;
+    const events = await this.eventsRepository.find({
+      order: {
+        startTime: 'DESC',
+      },
+      take: limit,
+      skip: offset,
+      relations: ['organizer'],
+    });
+    const total = await this.eventsRepository.count();
+    return { events, total };
+  }
+
+  async countAllEvents(): Promise<number> {
+    return this.eventsRepository.count();
+  }
+
+  async searchEvents(
+    keyword: string,
+    limit: number = 20,
+    page: number = 1,
+  ): Promise<{ events: Event[]; total: number }> {
+    const offset = (page - 1) * limit;
+    const queryBuilder = this.eventsRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.organizer', 'organizer')
+      .where('event.title LIKE :keyword', { keyword: `%${keyword}%` })
+      .orWhere('event.description LIKE :keyword', { keyword: `%${keyword}%` })
+      .orWhere('event.location LIKE :keyword', { keyword: `%${keyword}%` })
+      .orderBy('event.startTime', 'DESC')
+      .take(limit)
+      .skip(offset);
+
+    const events = await queryBuilder.getMany();
+    const total = await queryBuilder.getCount();
+
+    return { events, total };
+  }
 }

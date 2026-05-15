@@ -18,6 +18,16 @@ const router = createRouter({
           component: () => import('../view/layout/HomeView.vue'),
         },
         {
+          path: '/all-events',
+          name: 'all-events',
+          component: () => import('../view/layout/AllEventsView.vue'),
+        },
+        {
+          path: '/search-events',
+          name: 'search-events',
+          component: () => import('../view/layout/SearchEventsView.vue'),
+        },
+        {
           path: '/profile',
           name: 'profile',
           redirect: '/profile/my-events',
@@ -78,11 +88,6 @@ const router = createRouter({
               path: '/users/:id/events',
               name: 'user-events',
               component: () => import('../view/layout/user-detail/UserEventsView.vue'),
-            },
-            {
-              path: '/users/:id/comments-from-others',
-              name: 'user-comments-from-others',
-              component: () => import('../view/layout/user-detail/UserCommentsFromOthersView.vue'),
             },
           ],
         },
